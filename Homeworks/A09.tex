@@ -1,0 +1,244 @@
+\documentclass[11pt]{article}
+
+\usepackage{enumitem}
+
+
+%%TO EDIT
+\newcommand{\dueclassnumber}{23}
+\newcommand{\assignmentnum}{9}
+
+% CHANGE issolution{0} to issolution{1} for homework submission.
+% WRITE solutions inside the \solution{} commands.
+% or, you can use \if\issolution1 … \fi
+
+\def\issolution{1}
+\def\myname{Allen Liu} % My name goes here
+\def\mysec{01} % Section number goes here
+\def\myCM{374} % Campus Mailbox goes here
+
+\input{../common/flags}
+\newcommand\vv[2]{\begin{bmatrix} {#1} \cr {#2} \end{bmatrix}}
+
+% Leave the next line alone. This is for my answer keys.
+%\def\isanswerkey{1}
+
+\input{../common/header474}
+\if\isanswerkey1\input{macsse474-key}\fi
+
+
+\usetikzlibrary{positioning}
+
+\begin{document}
+
+\assignmentnametitlestuff
+
+
+\if\isanswerkey0
+{\bf Please follow the homework guidelines from A01.}
+
+\fi
+
+In this assignment, you may use any TM constructions from class, such as $D_{\textnormal{A-DFA}}$, $D_{\textnormal{A-NFA}}$,$D_\textnormal{E-DFA}$, $D_\textnormal{EQ-DFA}$, $D_\textnormal{EQ-REX}$. You may also use any known results from previous chapters of the textbook, e.g. that from any regular expression $R$, one can construct (and in particular, a Turing machine can construct) a DFA recognizing $L(R)$, likewise for CFGs and PDAs, etc.
+
+To show a language is decidable, it is sufficient to give a high-level description of a Turing machine that decides the language.
+
+
+
+\begin{enumerate}
+\if\isanswerkey0
+
+\item[0.] (4.1)  {\bf Warm-up. You don't need to submit this problem. But please do it, and check your answers on the back of this sheet.} 
+
+Answer all parts for the following DFA $M$ and give reasons for your answers.
+
+\begin{minipage}{.5\linewidth}
+\begin{enumerate}
+\item Is $\langle M, {\tt 0100} \rangle \in A_\textnormal{DFA}$?
+\item Is $\langle M, {\tt 011} \rangle \in A_\textnormal{DFA}$?
+\item Is $\langle M \rangle \in A_\textnormal{DFA}$?
+\item Is $\langle M, {\tt 0100} \rangle \in A_\textnormal{REX}$?
+\item Is $\langle M \rangle \in E_\textnormal{DFA}$?
+\item Is $\langle M,M \rangle \in EQ_\textnormal{DFA}$?
+\end{enumerate}
+\end{minipage}
+\begin{minipage}{.5\linewidth}
+\begin{tikzpicture}
+\node[state, initial,accepting] at (0,0) (0) {};
+\node[state] at (3,-0.5) (1) {};
+\node[state] at (1.0,-3) (2) {};
+\draw 
+(0) edge[loop above] node{${\tt 0}$} (0)
+(0) edge[bend left, above] node{${\tt 1}$} (1)
+(1) edge[bend left, below right] node{${\tt 0}, {\tt 1}$} (2)
+(2) edge[bend left, above left] node{${\tt 1}$} (1)
+(2) edge[bend left, below left] node{${\tt 0}$} (0)
+;
+\end{tikzpicture}
+\end{minipage}
+\fi
+
+\item (4.2) Consider the problem of determining whether a DFA and a regular expression are equivalent. Express this problem as a language and show that it is decidable.
+\solution{
+\if\isanswerkey1\solEquivDFARegExDecidable\fi
+Define the problem as language $REG_\textnormal{DFA}$ where
+\begin{equation*}
+    REG_\textnormal{DFA}=\left\{\langle M, R\rangle\mid M~\textnormal{is a DFA and }R~\textnormal{is a regular expression where }L\left(M\right)=L\left(R\right)\right\}
+\end{equation*}
+Since by \textbf{Theorem 4.5}
+\begin{displayquote}
+    Let $EQ_\textnormal{DFA}=\left\{\langle A, B\rangle\mid A~\textnormal{and}B\textnormal{ are DFAs and }L\left(A\right)=L\left(B\right)\right\}$, $EQ_{DFA}$ is a decidable language
+\end{displayquote}
+So that we can build a TM that decides whether two DFAs are equivalent, and we also know all regular expression has its equivalent DFA. Hence, there is a Turing-machine $D_\textnormal{REG-DFA}$ that decides the language $REG_\textnormal{DFA}$. Let $D_R$ be the equivalent DFA of regular expression $R$, similar to the \textsc{Proof} of \textbf{Theorem 4.5}, we can define a language $C$ where 
+\begin{equation}
+    L(C)=\left(L\left(M\right)\cap \overline{L\left(D_R\right)}\right) \cup \left(\overline{L\left(M\right)}\cap L\left(D_R\right)\right)\label{eqn:eq_DFA}
+\end{equation}
+$D_\textnormal{REG-DFA}$ is constructed based on \textsc{Proof} of \textbf{Theorem 4.5} and \textbf{Theorem 4.4}
+\begin{displayquote}
+    Let $E_{DFA}=\left\{\langle A\rangle\mid A\textnormal{ is a DFA and }L\left(A\right)=\emptyset\right\}$, $E_\textnormal{DFA}$ is a decidable language
+\end{displayquote}
+$D_\textnormal{REG-DFA}=$``On input $\langle M,R\rangle$, where $M$ is a DFA and $R$ is a regular expression:
+\begin{enumerate}
+    \item Convert regular expression $R$ into its equivalent DFA $M_R$
+    \item Construct DFA $C$ as described in eqn. \ref{eqn:eq_DFA}
+    \item Mark the start state of $C$
+    \begin{enumerate}
+        \item Mark all new states reachable from all marked state
+    \end{enumerate}
+    \item If there is new state marked, repeat step i
+    \item \begin{itemize}
+        \item If no accept state is marked $\to$ \textbf{\textit{accept}}
+        \item Otherwise $\to$ \textbf{\textit{reject}}''
+    \end{itemize}
+\end{enumerate}
+}
+
+\item (4.3) Let $ALL_\textnormal{DFA} = \{\langle A \rangle \mid A \textnormal{ is a DFA and } L(A) = \Sigma^*\}$.\\ Show that $ALL_\textnormal{DFA}$ is decidable.
+\solution{
+\if\isanswerkey1\solAllDFADecidable\fi
+For language $ALL_\textnormal{DFA}$, we can build a Turing-machine $D_\textnormal{ALL-DFA}$ that decides it, where machine $D_\textnormal{All-DFA}$ is defined as:\\
+$D_\textnormal{All-DFA}=$``On input $\langle A\rangle$, $A$ is a DFA
+\begin{enumerate}
+    \item Mark the start state of $A$, $q_0$
+    \item Check if $q_0$ is accept state, if not $\to$ \textbf{\textit{reject}}
+    \begin{enumerate}
+        \item Mark all new states reachable from all marked state
+        \item If any one of new marked state is not an accept state $\to$ \textbf{\textit{reject}}
+    \end{enumerate}
+    \item If there is new state marked, repeat steps i$-$ii
+    \item 
+    \begin{itemize}
+        \item If all marked states are accept state $\to$ \textbf{\textit{accept}}
+        \item Otherwise $\to$ \textbf{\textit{reject}}''
+    \end{itemize}
+\end{enumerate}
+}
+
+\item (4.10) Let $INF_\textnormal{DFA} = \{\langle A \rangle \mid A \textnormal{ is a DFA and } L(A) \textnormal{ is an infinite language}\}$.\\ Show that $INF_\textnormal{DFA}$ is decidable.
+\solution{
+\if\isanswerkey1\solInfDFADecidable\fi
+For language $INF_\textnormal{DFA}$, we can build a Turing-machine $D_\textnormal{INF-DFA}$ that decides it, where machine $D_\textnormal{INF-DFA}$ is defined as:\\
+$D_\textnormal{INF-DFA}=$``On input $\langle A\rangle$, $A$ is a DFA
+\begin{enumerate}
+    \item Mark the start state of $A$ as \texttt{x}
+    \item Mark all new states reachable from all states marked \texttt{x} along the unmarked edge as \texttt{x}
+    \item Mark all states marked \texttt{x} reachable from all marked marked \texttt{x} along the unmarked edge as \texttt{y}
+    \item Mark all new edge taken
+    \item If any new states has been marked as \texttt{y}, perform following steps starting from all the new states marked \texttt{y}
+    \begin{enumerate}
+        \item Mark the all states marked \texttt{x} that is reachable from those new states as \texttt{z}
+        \item Repeat step iii until no new states has been marked as \texttt{z}
+        \item Mark the states marked \texttt{x} that is reachable from states marked \texttt{z} as \texttt{z}
+        \item Clear mark on all states marked with \texttt{z}
+    \end{enumerate}
+    \item If there is new state marked, repeat steps (c)$-$(e)
+    \item 
+    \begin{itemize}
+        \item If any of state marked with \texttt{x} is accept state $\to$ \textbf{\textit{reject}}
+        \item Otherwise $\to$ \textbf{\textit{accept}}''
+    \end{itemize}
+\end{enumerate}
+}
+
+\item (4.13) Let $A = \{\langle R,S \rangle \mid \textnormal{$R$ and $S$ are regular expressions and $L(R) \subseteq L(S)$}\}$.\\ Show that $A$ is decidable.
+\solution{
+\if\isanswerkey1\solRegExpsSubsetDecidable\fi
+Let $D_R$ be the equivalent DFA of regular expression $R$, and $D_S$ be the equivalent DFA of $S$. Similar to the \textsc{Proof} of \textbf{Theorem 4.4} and \textbf{Theorem 4.5}, we can define a language $C$ where
+\begin{equation}
+    L\left(C\right)=\overline{L\left(D_S\right)}\cap L\left(D_R\right) \label{eqn:subset}
+\end{equation}
+Then we can construct a Turing-machine that recognizes language $A$, $D_A$ as\\
+$D_A=$``On input $\langle R,S\rangle$, $R$ and $S$ are regular expression
+\begin{enumerate}
+    \item Convert regular expression $R$ and $S$ to their equivalent DFA, $D_R$ and $D_S$
+    \item Construct DFA $C$ defined in eqn. \ref{eqn:subset}
+    \item Mark the start state of $C$
+    \item Repeat the step i until no new states has been marked
+    \begin{enumerate}
+        \item Mark the new state reachable from all marked state
+    \end{enumerate}
+    \item \begin{itemize}
+        \item If any of marked state is accept state $\to$ \textbf{\textit{reject}}
+        \item Otherwise $\to$ \textbf{\textit{accept}}''
+    \end{itemize}
+\end{enumerate}
+}
+
+\item (4.26) Let $PAL_\textnormal{DFA} = \{ \langle M \rangle \mid M \textnormal{ is a DFA that accepts some palindrome}\}$.\\ Show that $PAL_\textnormal{DFA}$ is decidable. Hint: a result involving CFLs from Worksheet 14 can be helpful.
+\solution{
+\if\isanswerkey1\solDFAAcceptingPalindromeDecidable\fi
+For language $A=\{w\mid w \textnormal{ is a palindrome}\}$, there is a CFG that describe it
+\begin{align*}
+    S &\to T\\
+    T &\to {\tt 0}T{\tt 0} \mid {\tt 1}T{\tt 1}\mid X\\
+    X &\to {\tt 0} \mid {\tt 1} \mid \epsilon
+\end{align*}
+$A$ is a CFL. 
+Let $L_\textnormal{reg}$ denote the \textbf{\textit{regular languages}}, since $M$ is DFA, so that $L(M)\textnormal{ is a } L_\textnormal{reg}$. Since $L_\textnormal{reg} \subseteq \textnormal{CFL}$, $L(M)$ is also a CFL. Let's define PDA $M_A$ that $A=L(M_A)$. As language $A$ and $L(M)$ are all CFL, so that
+\begin{equation}
+    \exists ~\textnormal{CFG }C \mid L(C)=L(M) \cap L(M_A)\label{eqn:cfg}
+\end{equation}
+Since by \textbf{Theorem 4.8}
+\begin{displayquote}
+    Let $E_\textnormal{CFG}=\left\{\langle G\rangle \mid G \textnormal{ is a CFG and }L(G)=\emptyset\right\}$, $E_\textnormal{CFG}$ is a decidable language
+\end{displayquote}
+There is a TM $D_\textnormal{E-CFG}$ that decides if a CFG is empty. So that we can construct the TM $D_\textnormal{PAL-DFA}$ that decides language $PAL_\textnormal{DFA}$ based on the \textsc{Proof} of \textbf{Theorem 4.8} where\\
+$D_\textnormal{PAL-DFA}=$``On input $\langle M\rangle$, where $M$ is a DFA
+\begin{enumerate}
+    \item Construct a PDA $M_A$ where $L(M_A)=$ \{$w\mid w$ is a palindrome\}
+    \item Construct PDA $C$ as defined in eqn. \ref{eqn:cfg}
+    \item Mark all terminals in $C$
+    \item Repeat the following step until no new variables are marked
+    \begin{enumerate}
+        \item Mark all variable $A$ in $C$ such that there exist a rule $A\to U_1U_2...U_i...U_k$, where for $i=1...k$, all $U_i$ has been marked
+    \end{enumerate}
+    \item \begin{itemize}
+        \item If the start variable in $C$, $S$ is marked $\to$ \textbf{\textit{accept}}
+        \item Otherwise $\to$ \textbf{\textit{reject}}''
+    \end{itemize}
+\end{enumerate}
+}
+
+\end{enumerate}
+
+\if\isanswerkey0
+\pagebreak
+
+\subsubsection*{Answers}
+\begin{enumerate}
+\item[0.] Answers to warm-up problem:
+
+\begin{enumerate}
+\item Yes, because $M$ is a valid DFA, and it accepts ${\tt 0100}$.
+\item No, because while $M$ is a valid DFA, it rejects ${\tt 011}$.
+\item No, the input has only a single component and thus is not in the correct form.
+\item No, the first part of the input is not a regular expression, so the input is not in the correct form.
+\item No, the language of $M$ is not empty.
+\item Yes, because $M$ accepts the same language as itself.
+\end{enumerate}
+
+\end{enumerate}
+\fi
+
+
+
+\end{document}

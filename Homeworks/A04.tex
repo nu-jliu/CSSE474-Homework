@@ -1,0 +1,108 @@
+\documentclass[11pt]{article}
+
+%%TO EDIT
+\newcommand{\dueclassnumber}{9}
+\newcommand{\assignmentnum}{4}
+
+% CHANGE issolution{0} to issolution{1} for homework submission.
+% WRITE solutions inside the \solution{} commands.
+% or, you can use \if\issolution1 … \fi
+
+\def\issolution{1}
+\def\myname{Allen Liu} % My name goes here
+\def\mysec{01} % Section number goes here
+\def\myCM{374} % Campus Mailbox goes here
+
+\input{../common/flags}
+\newcommand\vv[2]{\begin{bmatrix} {#1} \cr {#2} \end{bmatrix}}
+
+% Leave the next line alone. This is for my answer keys.
+%\def\isanswerkey{1}
+
+\input{../common/header474}
+\if\isanswerkey1\input{macsse474-key}\fi
+
+\begin{document}
+
+\assignmentnametitlestuff
+
+
+\if\isanswerkey0
+{\bf Please follow the homework guidelines from A01.}
+
+\fi
+
+
+\begin{enumerate}
+
+%\item (1.42) For languages $A$ and $B$ over the same alphabet $\Sigma$, let the {\bf shuffle} of $A$ and $B$ be the language
+%\[\{w \mid w = a_1b_1\cdots a_kb_k, \textnormal{ where } a_1\cdots a_k \in A \textnormal{ and } b_1\cdots b_k \in B \textnormal{ for some $k \ge 0$, } \textnormal{ where each } a_i, b_i \in \Sigma^*\}.\]
+%(Note: the difference from perfect shuffle is that in shuffle, $a_i, b_i \in \Sigma^*$, not $\Sigma$.)
+%
+%Show that the class of regular languages is closed under shuffle. 
+%\solution{
+%\if\isanswerkey1\solShuffle\fi
+%}
+
+
+\item (1.29c) Use the pumping lemma to show that this language is not regular:\\
+$A_3 = \{{\tt a}^{2^n} \mid n \ge 0\}$ (Here, ${\tt a}^{2^n}$ means a string of $2^n$ {\tt a}'s.)
+\solution{
+Suppose $A_3$ is regular, let $p$ be the pumping length in the pumping lemma. Consider a string $s={\tt a}^{2^n}\in A_3$ where $2^n \ge p$. Note that $\mid s\mid=2^n\ge p$, so $s=xyz$ with the properties in pumping lemma. By the pumping lemma, $|xy|\le p$, let $\mid y\mid = k$ where $k > 0$, then string $|xy^4z|=2^n+3k$. Since $2^n+3k\ne 2^r$, which contradicts the pumping lemma, so that language $A_3$ is not regular.
+}
+
+\item (1.46ac) Prove that the following languages are not regular. You may use the pumping lemma and the closure of the class of regular languages under union, intersection, and complement.
+\begin{enumerate}
+\item $\{{\tt 0}^n{\tt 1}^m{\tt 0}^n \mid m,n \ge 0\}$
+\solution{
+Assume language $D=\{{\tt 0}^n{\tt 1}^m{\tt 0}^n \mid m,n \ge 0\}$ is regular. The let $p$ be the pumping length in the lemma. Consider a string $s={\tt 0}^p{\tt 1}{\tt 0}^p \in D$. Note that $|s|=2p+1 \ge p$ as in the properties in the pumping lemma. Since $|xy|\le p$, then $y\in {\tt 0}^+$. Thus, in the string $xy^2z$, there is more ${\tt 0}$s than ${\tt 1}$s, which contradicts the pumping lemma. Hence, the language $D$ is not regular. 
+}
+\item[(c)] $\{w \mid w \in \{0,1\}^* \textnormal{ is not a palindrome}\}$  \\
+(A {\em palindrome} is a string that reads the same forward and backward.)
+\solution{
+Assume language $D=\{w \mid w \in \{0,1\}^* \textnormal{ is not a palindrome}\}$ is regular. Since language $A={\tt 0}^*{\tt 1}^*{\tt 0}^*$ is a regular language, then language $\overline{D} \cup A$ is also a regular language. The language of $\overline{D} \cup A$ is same as the language described in (a), which has been shown to be irregular, which contradicts the properties of the regular language. Hence, the language $D$ is not regular. 
+}
+\end{enumerate}
+
+\item (1.70) We define the {\em avoids} operation for languages $A$ and $B$ to be
+\[A \textnormal{ {\em avoids} } B = \{w \mid w \in A \textnormal{ and $w$ doesn't contain any string in $B$ as a substring}\}.\]
+Prove that the class of regular languages is closed under the {\em avoids} operation.
+\solution{
+For two regular languages $A$ and $B$, assume they are all regular, so there must be a DFA\\ $M_A(Q_A, \Sigma, \delta_A, q_A, F_A)$ that recognizes language $A$ and a DFA $M_B(Q_B, \Sigma, \delta_B, q_B, F_B)$ that recognizes language $B$, where $A=L(M_A)$ and $B=L(M_B)$. So that we can construct a NFA that recongnizes $A ~avoids ~B$: $M(Q, \Sigma, \delta, q_0, F)$:
+\begin{itemize}
+    \item $Q$: For the DFA $M$, $Q=Q_A \cup Q_B \cup \left\{\varnothing \right\}$
+    \item $\Sigma$: The alphabets are all same
+    \item $\delta$: 
+    \begin{equation*}
+        \delta(q, d) = 
+        \begin{cases}
+            \delta(q, d) & \text{where } q \in Q_A \\
+            \delta_A(q, d) \cup \left\{q_B\right\} & \text{where } q \in F_A, d=\epsilon \\
+            \delta_B(q, d) & \text{where } q \in Q_B \\
+            \varnothing & \text{where } q \in F_B
+        \end{cases}
+    \end{equation*}
+    \item $q_0$: $q_0=q_A$
+    \item $F$: $F=F_A$
+\end{itemize}
+Hence, there is a finite automata that recongnizes language $A ~avoids ~B$, which makes the language $A ~avoids ~B$ regular. So operation $avoids$ is closed. 
+}
+
+\item (1.71) 
+\begin{enumerate}
+\item Let $A = \{{\tt 0}^k u {\tt 0}^k \mid k \ge 1 \textnormal{ and } u \in \Sigma^*\}$. Show that $A$ is regular.
+\solution{
+Let language $A'={\tt 0}\Sigma^*{\tt 0}$, so that language $A=A'$. Since $A'$ is regular, then $A$ is also regular.
+}
+\item Let $B = \{{\tt 0}^k {\tt 1} u {\tt 0}^k \mid k \ge 1 \textnormal{ and } u \in \Sigma^*\}$. Show that $A$ is {\bf not} regular.
+\solution{
+Assume language $B$ is regular, let $p$ be the pumping length as in the pumping lemma. Consider a string $s={\tt 0}^p{\tt 1}\Sigma^*{\tt 0}^p$. Node that $|s|>p$, then $s=xyz$ as in pumping lemma. Since in the pumping lemma, $|xy|\le p$, then $y \in 0^+$. Then $xy^2z$ must have more ${\tt 0}$s, which contradicts the pumping lemma. Hence the language $B$ is not regular. 
+}
+\end{enumerate}
+
+
+
+\end{enumerate}
+
+
+\end{document}

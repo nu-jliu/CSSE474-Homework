@@ -1,0 +1,120 @@
+\documentclass[11pt]{article}
+
+\usepackage{enumitem}
+
+
+%%TO EDIT
+\newcommand{\dueclassnumber}{35}
+\newcommand{\assignmentnum}{14}
+
+% CHANGE issolution{0} to issolution{1} for homework submission.
+% WRITE solutions inside the \solution{} commands.
+% or, you can use \if\issolution1 … \fi
+
+\def\issolution{1}
+\def\myname{Allen Liu} % My name goes here
+\def\mysec{01} % Section number goes here
+\def\myCM{374} % Campus Mailbox goes here
+
+\input{../common/flags}
+
+% Leave the next line alone. This is for my answer keys.
+%\def\isanswerkey{1}
+
+\input{../common/header474}
+\if\isanswerkey1\input{macsse474-key}\fi
+
+\begin{document}
+
+\assignmentnametitlestuff
+
+
+\begin{enumerate}
+
+\item (7.12) Call graphs $G$ and $H$ {\bf isomorphic} if the nodes of $G$ may be reordered so that it is identical to $H$. Let $ISO = \{\langle G, H \rangle \mid G \textnormal{ and $H$ are isomorphic graphs}\}$. Show that $ISO \in \NP$.
+\solution{
+\if\isanswerkey1\solISOinNP\fi
+Let $D_\textnormal{ISO}$ be the nondeterministic decider for $ISO$ that runs in polynomial time. We can construct an $D_\textnormal{ISO}$ as follow:\\
+$D_\textnormal{ISO}=$ ``On input $\langle G, H\rangle$, 
+\begin{enumerate}
+    \item Check if the graph $G$ and $H$ contains the same number of node
+    \begin{itemize}
+        \item If not \tmRej
+    \end{itemize}
+    \item Denote all nodes in graph $G$ as $G_1, G_2, ..., G_i, ..., G_n \in V_G$, and all nodes in graph $H$ as $H_1, H_2, ..., H_i, ..., H_n \in V_G$, where $n$ is the number of nodes in graph $G$ and $H$
+    \item Nondeterminstically reorder the list $H_1, H_2, ..., H_n$ into $H_1', H_2', ..., H_n'$
+    \item Check $\forall \left(G_i, G_j\right) \in E_G \mid \left(H_i', H_j'\right) \in E_H$ and $\forall \left(H_i', H_j'\right) \in E_H \mid \left(G_i, G_j\right) \in E_G$, where $E_G$ is the set of edges in grapg $G$ and $E_H$ is the set of edges in graph $H$ 
+    \begin{itemize}
+        \item If it does \tmAcc
+        \item Otherwise \tmRej''
+    \end{itemize}
+\end{enumerate}
+For the decider $D_\textnormal{ISO}$, the step (b) nondeterministically in polynomial time, and other steps runs in polynomial time. So that $D_\textnormal{ISO}$ runs nondeterministically in polynomial time. Hence $ISO \in \NP$
+}
+
+\item (7.18) Show that if $\P = \NP$, then every language $A \in \P$, except $A = \emptyset$ and $A = \Sigma^*$, is NP-complete.
+\solution{
+\if\isanswerkey1\solIfPEqualNPThenMostOfPisNPComplete\fi
+Let $L$ be an arbitrary language such that $L \in \NP$, and $A$ be an arbituary language such that $A \neq \emptyset \wedge A \neq \Sigma^*$. Let $s_1, s_2$ be two arbitrary string such that $s_1 \in A$ and $s_2 \notin A$. Since we know $A \neq \Sigma^*$ and $A \neq \emptyset$, $s_1$ and $s_2$ exists. So that we can build a function $f(w)$ such that
+\begin{equation*}
+    f(w)=
+    \begin{cases}
+    s_1 & w \in L\\
+    s_2 & w\notin L
+    \end{cases}
+\end{equation*}
+Since $A \in \NP$ and $\P = \NP$, so that $A \in \P$. So there exists $D_\textnormal{A}$ that runs in polynomial time. And we can decider whether $w \in A$ or $w \notin A$ in polynomial time, which make the function $f(w)$ also runs in polynomial time. Then, $L \leq_\textnormal{P} A$. Hence, language $A \in \textsf{NP-Complete}$
+}
+
+\item (7.20) We generally believe that $PATH$ is not NP-complete. Explain the reason behind this belief. Show that proving $PATH$ is not NP-complete would prove $\P \ne \NP$.
+\solution{
+\if\isanswerkey1\solPATHnotNPcomplete\fi
+\textsc{Proof}: The statement $PATH \notin \textsf{NP-Complete} \rightarrow \P \neq \NP$ is equivalent as $PATH \in \textsf{NP-Complete} \leftarrow \P = \NP$. So that we can prove that by showing $\P = \NP \rightarrow PATH \in \textsf{NP-Complete}$. Let $A$ be a arbitrary language such that $A \in \NP$. Since $\P = \NP$, so that $A \in \NP$, and there exists a decider $D_\textnormal{A}$ that runs in polynomial time. So that we can make a function $f(w)$ that
+\begin{equation*}
+    f(w)=
+    \begin{cases}
+    \langle G, s, t\rangle \mid s, t \in V_G \wedge \left(s, t\right) \in E_G & w \in A\\
+    \langle G, s, t\rangle \mid V_G=\{s, t\}, ~E_G=\emptyset & w\notin A
+    \end{cases}
+\end{equation*}
+Since we know that $A \in \P$, so that we can decide $w \in A$ or $w \notin A$ in polynomial time, which makes the function $f(w)$ runs in polynomial time, so that $A \leq_\textnormal{P} PATH$. And we know that $PATH \in \P$ by \textbf{Theorem 7.14}, and $\P = \NP$ so that $PATH \in \NP$. Hence $PATH \in \textsf{NP-Complete}$. Since we have proved that $\P = \NP \rightarrow PATH \in \textsf{NP-Complete}$, we can conclude that $PATH \notin \textsf{NP-Complete} \rightarrow \P \neq \NP$
+}
+
+\item (7.21) Let $G$ represent an undirected graph. Also let
+\[SPATH = \{\langle G, a, b, k \rangle \mid G \textnormal{ contains a simple path of length at most $k$ from $a$ to $b$}\},\]
+and
+\[LPATH = \{\langle G, a, b, k \rangle \mid G \textnormal{ contains a simple path of length at least $k$ from $a$ to $b$}\}.\]
+\begin{enumerate}
+\item Show that $SPATH \in \P$.
+\solution{
+For the problem $SPATH$, we can construct a decider $D_\textnormal{SPATH}$ that decides the $SPATH$ in polynomial time as following:\\
+$D_\textnormal{SPATH}=$ ``On input $\langle G, a, b, k\rangle$, where $G$ is an undirected graph, $a, b$ are nodes in graph $G$ and $k$ is a number,
+\begin{enumerate}
+    \item Mark node $a$ with number \texttt{0}
+    \item Repeat the following for $i=1...k-1$
+    \begin{enumerate}
+        \item Mark all nodes reachable from node marked with $i$ as $i+1$
+        \item If node $b$ is marked \tmAcc
+    \end{enumerate}
+    \item If node $b$ has not been marked yet \tmRej''
+\end{enumerate}
+For this decider $D_\textnormal{SPATH}$, step i $\to O(1)$, ii, iii $\to O(n)$. So that, overall, it runs in $O(n)$ time, which is polynomial time. Hence $SPATH \in \P$
+}
+\item Show that $LPATH$ is NP-complete.
+\solution{
+Since we know that $UHAMPATH \in \textsf{NP-Complete}$, so that we can show $LPATH \in \textsf{NP-Complete}$ by showing $UHAMPATH \leq_\textnormal{P} LPATH$. The function $f(\langle G, a, b\rangle)$ is defined as following
+\begin{equation*}
+    f(\langle G, a, b\rangle) = \langle G, a, b, |V_G|\rangle
+\end{equation*}
+Where $|V_G|$ is the number of nodes in graph $G$. $\forall ~\langle G, a, b\rangle \in UHAMPATH$, there is a path from $a$ to $b$ visiting all nodes, which is length of $|V_G|$. Since $G$ only has $|V_G|$ nodes, so that $\langle G, a, b, |V_G|\rangle \in LPATH \Longleftrightarrow \langle G, a, b\rangle \in UHAMPATH$, which makes $UHAMPATH \leq_\textnormal{P} LPATH$. So that $UHAMPATH \leq_\textnormal{P} LPATH$ and $UHAMPATH \in \textsf{NP-Complete}$. Hence $LPATH \in \textsf{NP-Complete}$
+}
+
+Hint: you may use the fact that $UHAMPATH$, the Hamiltonian path problem for undirected graphs, is NP-complete.
+\end{enumerate}
+
+\end{enumerate}
+
+
+
+
+\end{document}

@@ -1,0 +1,263 @@
+\documentclass[11pt]{article}
+
+\usepackage{enumitem}
+
+
+%%TO EDIT
+\newcommand{\dueclassnumber}{17}
+\newcommand{\assignmentnum}{7}
+
+% CHANGE issolution{0} to issolution{1} for homework submission.
+% WRITE solutions inside the \solution{} commands.
+% or, you can use \if\issolution1 … \fi
+
+\def\issolution{1}
+\def\myname{Allen Liu} % My name goes here
+\def\mysec{01} % Section number goes here
+\def\myCM{374} % Campus Mailbox goes here
+
+\input{../common/flags}
+\newcommand\vv[2]{\begin{bmatrix} {#1} \cr {#2} \end{bmatrix}}
+
+% Leave the next line alone. This is for my answer keys.
+%\def\isanswerkey{1}
+
+\input{../common/header474}
+\if\isanswerkey1\input{macsse474-key}\fi
+
+
+\usetikzlibrary{positioning}
+
+\begin{document}
+
+\assignmentnametitlestuff
+
+
+\if\isanswerkey0
+{\bf Please follow the homework guidelines from A01.}
+
+\fi
+
+
+\begin{enumerate}
+
+\item (2.48) Let $\Sigma = \{0,1\}$. Let $C_1$ be the language of all strings that contain a {\tt 1} in their middle third. Let $C_2$ be the language of all strings that contain two {\tt 1}s in their middle third. In particular,
+\begin{align*}
+C_1 &= \{xyz \mid x,z \in \Sigma^* \textnormal{ and $y \in \Sigma^*{\tt 1}\Sigma^*$, where $|x| = |z| \ge |y|$}\} \cr
+C_2 &= \{xyz \mid x,z \in \Sigma^* \textnormal{ and $y \in \Sigma^*{\tt 1}\Sigma^*{\tt 1}\Sigma^*$, where $|x| = |z| \ge |y|$}\}.
+\end{align*}
+\begin{enumerate}
+\item Show that $C_1$ is a CFL.
+\solution{
+\if\isanswerkey1\solMiddleThirdHasOneCFL\fi
+The language $C_1$ can be recognized by following CFG:
+\begin{align*}
+    S &\to S_1 \mid S_2 \\
+    S_1 &\to XTX \mid T \\
+    T &\to XXTX \mid {\tt 1}\\
+    S_2 &\to XFX \mid F \\
+    F &\to XFXX \mid {\tt 1} \\
+    X &\to {\tt a} \mid  {\tt b} 
+\end{align*}
+}
+\item Show that $C_2$ is not a CFL.
+\solution{
+\if\isanswerkey1\solMiddleThirdHasTwoOnesNotCFL\fi
+Assume language $C_2$ is a context-free language, then pumping lemma applied. Let $p$ be the pumping length as in the pumping lemma. According to the lemma, string $s=uvxyz \in C_2$. Consider a string $s={\tt 0}^{p+1}{\tt 1}{\tt 0}^p{\tt 1}{\tt 0}^{p+1} \in C_2$, $|s|=3p+3 \ge p$ as in pumping lemma. Since $|vxy| \le p$, $v \in {\tt 0}^+$ and $y \in {\tt 0}^+$. So for a pumped string, let's say $s'=uv^2xy^2z$, at most 2 adjacent groups of {\tt 0}s would have been stretched. So this will result in the string has $|x|\not=|y|$ or $|y| > |z|$, which makes the $s' \not\in C_2$. Hence language $C_2$ is not regular.
+}
+
+\end{enumerate}
+
+\item (3.1) Consider the Turing machine $M_2$, whose state diagram is below. (The notation $a \to b, \Rsym$ denotes reading $a$ and overwriting with $b$ at the current head location, then moving the head one step right.) In each case, give the sequence of configurations that $M_2$ enters when started on the indicated input string.
+
+\begin{minipage}{.15\linewidth}
+\begin{enumerate}
+\item {\tt 0}
+\item {\tt 00}
+\item {\tt 000}
+\item {\tt 000000}
+\end{enumerate}
+
+\end{minipage}\hfill
+\begin{minipage}{.8\linewidth}
+\begin{tikzpicture}[node distance=3cm]
+\node [state, initial] (1) {$q_1$};
+\node [state, right=3cm of 1] (2) {$q_2$};
+\node [state, right=4cm of 2] (3) {$q_3$};
+\node [state, below=2cm of 3] (4) {$q_4$};
+\node [state, above right= 1.5cm and 2cm of 2] (5) {$q_5$};
+\node [state, below=1cm of 2] (acc) {$\qacc$};
+\node [state, below=2cm of 1] (rej) {$\qrej$};
+\draw 
+(1) edge[below] node{${\tt 0} \to \tvs,\Rsym$} (2)
+(1) edge[left] node[align=center]{$\tvs \to \Rsym$\\${\tt x} \to \Rsym$} (rej)
+(2) edge[below] node{${\tt 0} \to {\tt x},\Rsym$} (3)
+(2) edge[right] node[align=center]{$\tvs \to \Rsym$} (acc)
+(2) edge[loop above] node{${\tt x} \to \Rsym$} (2)
+(3) edge[loop above] node{${\tt x} \to \Rsym$} (3)
+(3) edge[bend right=10, left] node{${\tt 0} \to \Rsym$} (4)
+(3) edge[above,sloped] node{$\tvs \to \Lsym$} (5)
+(4) edge[bend right=10, right] node{${\tt 0} \to {\tt x}, \Rsym$} (3)
+(4) edge[loop right] node{${\tt x} \to \Rsym$} (4)
+(5) edge[above,sloped] node{$\tvs \to \Rsym$} (2)
+(5) edge[loop above] node[align=center]{${\tt 0} \to \Lsym$ \\${\tt x} \to \Lsym$} (5)
+(4) edge[bend left=7, above] node{$\tvs \to \Rsym$} (rej)
+;
+\end{tikzpicture}
+\end{minipage}
+\solution{
+\if\isanswerkey1\solTMConfigurationSequence\fi
+\begin{enumerate}
+    \item \begin{align*}
+        &q_1{\tt 0}\\
+        &\tvs q_2\tvs\\
+        &\qacc
+    \end{align*}
+    \item \begin{align*}
+        &q_1{\tt 00}\\
+        &\tvs q_2{\tt 0}\\
+        &\tvs{\tt x}q_3\tvs\\
+        &\qrej
+    \end{align*}
+    \item \begin{align*}
+        &q_1{\tt 000}\\
+        &\tvs q_2{\tt 00}\\
+        &\tvs{\tt x}q_3{\tt 0}\\
+        &\tvs{\tt x0}q_4\tvs\\
+        &\qrej
+    \end{align*}
+    \item \begin{align*}
+        &q_1{\tt 000000}\\
+        &\tvs q_2{\tt 00000}\\
+        &\tvs{\tt x}q_3{\tt 0000}\\
+        &\tvs{\tt x0}q_4{\tt 000}\\
+        &\tvs{\tt x0x}q_3{\tt 00}\\
+        &\tvs{\tt x0x0}q_4{\tt 0}\\
+        &\tvs{\tt x0x0x}q_3\tvs\\
+        &\tvs{\tt x0x0}q_5{\tt x}\\
+        &\tvs{\tt x0x}q_5{\tt 0x}\\
+        &\tvs{\tt x0}q_5{\tt x0x}\\
+        &\tvs{\tt x}q_5{\tt 0x0x}\\
+        &\tvs q_5{\tt x0x0x}\\
+        &q_5\tvs{\tt x0x0x}\\
+        &\tvs q_2{\tt x0x0x}\\
+        &\tvs{\tt x}q_2{\tt 0x0x}\\
+        &\tvs{\tt xx}q_3{\tt x0x}\\
+        &\tvs{\tt xxx}q_3{\tt 0x}\\
+        &\tvs{\tt xxx0}q_4{\tt x}\\
+        &\tvs{\tt xxx0x}q_4\tvs\\
+        &\qrej
+    \end{align*}
+\end{enumerate}
+}
+
+
+\item (3.8) Give implementation-level descriptions (i.e., clear, complete English descriptions of the steps of the machine) of Turing machines that decide the following languages over the alphabet $\{{\tt 0},{\tt 1}\}$.
+\begin{enumerate}
+\item $\{w \mid w \textnormal{ contains an equal number of {\tt 0}s and {\tt 1}s}\}$
+\item $\{w \mid w \textnormal{ contains twice as many {\tt 0}s as {\tt 1}s}\}$
+\item $\{w \mid w \textnormal{ does not contain twice as many {\tt 0}s as {\tt 1}s}\}$
+\end{enumerate}
+\solution{
+\if\isanswerkey1\solTMDescriptionsDecideLanguages\fi
+\begin{enumerate}
+    \item 
+    \begin{enumerate}
+        \item Scan to the right to make sure that the input has ${\tt 0} \ge 1$ and ${\tt 1} \ge 1$ or the input is empty. 
+        \begin{itemize}
+            \item If the input is empty $\to \qacc$
+        \end{itemize}
+        \item Scan to the right and cross of the first {\tt 0}
+        \begin{itemize}
+            \item If no {\tt 0} is found, scan to the right to find for {\tt 1}s
+            \begin{itemize}
+                \item If no {\tt 1} is found $\to \qacc$
+                \item If a {\tt 1} has been found $\to \qrej$
+            \end{itemize}
+        \end{itemize}
+        \item Rewind to the left and scan to the right to cross off {\tt 1}
+        \begin{itemize}
+            \item If no {\tt 1} has been found $\to \qrej$
+        \end{itemize}
+        \item Rewind to the left and repeat step ii. 
+    \end{enumerate}
+    \item
+    \begin{enumerate}
+        \item Scan to the right to make sure that the input has ${\tt 0} \ge 1$ and ${\tt 1} \ge 1$ or the input is empty. 
+        \begin{itemize}
+            \item If the input is empty $\to \qacc$
+        \end{itemize}
+        \item Scan to the right and cross of the first {\tt 1}
+        \begin{itemize}
+            \item If no {\tt 1} is found, scan to the right to find for {\tt 0}s
+            \begin{itemize}
+                \item If no {\tt 0} is found $\to \qacc$
+                \item If a {\tt 0} has been found $\to \qrej$
+            \end{itemize}
+        \end{itemize}
+        \item Rewind to the left and scan to the right to cross off first 2 {\tt 0}s
+        \begin{itemize}
+            \item If no {\tt 0} has been found $\to \qrej$
+            \item If only one {\tt 0} has been found $\to \qrej$
+        \end{itemize}
+        \item Rewind to the left and repeat step ii. 
+    \end{enumerate}
+    \item
+    \begin{enumerate}
+        \item Scan to the right to make sure that the input has ${\tt 0} \ge 1$ and ${\tt 1} \ge 1$ or the input is empty. 
+        \begin{itemize}
+            \item If the input is empty $\to \qrej$
+        \end{itemize}
+        \item Scan to the right and cross of the first {\tt 1}
+        \begin{itemize}
+            \item If no {\tt 1} is found, scan to the right to find for {\tt 0}s
+            \begin{itemize}
+                \item If no {\tt 0} is found $\to \qrej$
+                \item If a {\tt 0} has been found $\to \qacc$
+            \end{itemize}
+        \end{itemize}
+        \item Rewind to the left and scan to the right to cross off first 2 {\tt 0}s
+        \begin{itemize}
+            \item If no {\tt 0} has been found $\to \qacc$
+            \item If only one {\tt 0} has been found $\to \qacc$
+        \end{itemize}
+        \item Rewind to the left and repeat step ii. 
+    \end{enumerate}
+\end{enumerate}
+}
+
+
+\item (3.9) Let a $k$-PDA be a pushdown automata that has $k$ stacks. Thus a 0-PDA is an NFA and a 1-PDA is a conventional PDA. You already know that 1-PDAs are more powerful (recognize a larger class of languages) than 0-PDAs.
+\begin{enumerate}
+\item Show that 2-PDAs are more powerful than 1-PDAs.
+\solution{
+\if\isanswerkey1\solTwoPDAMorePowerfulOnePDA\fi
+For a 2-PDAs, they can recognize some languages that is not recognizable on 1-PDA. For example, language $A=\left\{{\tt a}^n{\tt b}^n{\tt c}^n \mid n > 0\right\}$, it is not recognizable by 1-PDA since it is not CFL. It can be proved by the following procedure: \newline Assume language $A$ is a CFL, pumping lemma applied. Let $p$ be the pumping length as in pumping lemma. Then, $s=uvxyz \in A$ as in pumping lemma. Consider a string $s={\tt a}^p{\tt b}^p{\tt c}^p \in A$, $|s|=3p \ge p$. Since in the pumping lemma, $|vxy| \le p$, $v$ and $y$ at most contains 2 of the 3 kinds in $\left\{{\tt a}, {\tt b}, {\tt c}\right\}$. For a pumped string, say $s'=uv^2xy^2z$, since $|v| \ge 0$ and $|y| \ge 0$, it must have two kinds that have more symbols than the $3^{\textnormal{rd}}$ one. So $s' \not\in A$. Hence language $A$ is not a CFL. 
+\newline For a 2-PDA, the language $A$ can be recognized by the following 2-PDA: 
+\begin{itemize}
+    \item Begin with pushing the start character \$ to both stacks
+    \item When the input reads symbol {\tt a}, it pushed it into the both stacks
+    \item When the input reads symbol {\tt b}, it popped a symbol from the first stack
+    \item When the input reads symbol {\tt c}, it popped a symbol from the second stack
+    \item When the input is empty and there is \$ in both stack $\to \qacc$
+    \item Otherwise $\to \qrej$
+\end{itemize}
+Hence the 2-PDAs can recognize some languages that are not recognizable by 1-PDA, so it is more powerful than 1-PDA.
+}
+\item Show that 3-PDAs are not more powerful than 2-PDAs. You may use the result of Theorem 3.13 that any multi-tape Turing machine can be simulated by a single-tape Turing machine.\\
+(Hint: Simulate a Turing machine tape with two stacks.) 
+\solution{
+\if\isanswerkey1\solThreePDANotMorePowerfulTwoPDA\fi
+For a 2-PDA, at a given state $q_x$, where the first stack contains the characters $s_1$ and second stack contains the characters $s_2$. This is equivalent to a 2-tape Turing machine with first tape at $s_1q_x\tvs$ and second tape at $s_2q_x\tvs$. popping from a stack is equivalent to moving L and overwriting with character $\tvs$ and pushing ${\tt a}$ is equivalent with moving R and overwriting with character ${\tt a}$. So for a 3-PDA, it can be also converted into a 3-tape Turing machine. Since by Theorem 3.13, $k$-tape Turing machine can all be converted into a single-tape Turing machine. So both 2-PDAs and 3-PDAs can be converted into a single-tape Turing machine. Hence 3-PDAs is same powerful as 2-PDAs, so it is not more powerful than 2-PDAs.  
+}
+\end{enumerate}
+
+
+
+\end{enumerate}
+
+
+
+
+
+\end{document}

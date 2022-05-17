@@ -1,0 +1,296 @@
+\documentclass[11pt]{article}
+
+\usepackage{enumitem}
+
+%%TO EDIT
+\newcommand{\dueclassnumber}{13}
+\newcommand{\assignmentnum}{5}
+
+% CHANGE issolution{0} to issolution{1} for homework submission.
+% WRITE solutions inside the \solution{} commands.
+% or, you can use \if\issolution1 … \fi
+
+\def\issolution{1}
+\def\myname{Allen Liu} % My name goes here
+\def\mysec{01} % Section number goes here
+\def\myCM{374} % Campus Mailbox goes here
+
+\input{../common/flags}
+\newcommand\vv[2]{\begin{bmatrix} {#1} \cr {#2} \end{bmatrix}}
+
+% Leave the next line alone. This is for my answer keys.
+%\def\isanswerkey{1}
+
+\input{../common/header474}
+\if\isanswerkey1\input{macsse474-key}\fi
+
+\begin{document}
+
+\assignmentnametitlestuff
+
+
+\if\isanswerkey0
+{\bf Please follow the homework guidelines from A01.}
+
+\fi
+
+
+\begin{enumerate}
+
+\item[0.] (2.3) {\bf Warm-up. You don't need to submit this problem. But please do it, and check your answers on the back of this sheet.}
+Answer each part for the following context-free grammar $G$.
+\begin{align*}
+R &\to XRX \mid S \cr
+S &\to {\tt a}T{\tt b} \mid {\tt b}T{\tt a} \cr
+T &\to XTX \mid X \mid \epsilon \cr
+X &\to {\tt a} \mid {\tt b}
+\end{align*}
+
+\newcounter{parts}
+\begin{minipage}{.5\linewidth}
+\begin{enumerate}
+\item What are the variables of $G$?
+\item What are the terminals of $G$?
+\item Which is the start variable of $G$?
+\item Give three strings in $L(G)$.
+\item Give three strings {\em not} in $L(G)$.
+\item True or False: $T \Rightarrow {\tt aba}$.
+\item True or False: $T \stackrel{*}{\Rightarrow} {\tt aba}$.
+\item True or False: $T \Rightarrow T$.
+\setcounter{parts}{\value{enumii}}
+\end{enumerate}
+\end{minipage}
+\begin{minipage}{.5\linewidth}
+\begin{enumerate}
+\setcounter{enumii}{\value{parts}}
+\item True or False: $T \stackrel{*}{\Rightarrow} T$.
+\item True or False: $XXX \stackrel{*}{\Rightarrow} {\tt aba}$.
+\item True or False: $X \stackrel{*}{\Rightarrow} {\tt aba}$.
+\item True or False: $T \stackrel{*}{\Rightarrow} XX$.
+\item True or False: $T \stackrel{*}{\Rightarrow} XXX$.
+\item True or False: $S \stackrel{*}{\Rightarrow} \epsilon$.
+\item Give a description in English of $L(G)$.
+\end{enumerate}
+\end{minipage}
+
+\item (2.4abcd) Give context-free grammars that generate the following languages. In all parts, the alphabet $\Sigma$ is $\{{\tt 0},{\tt 1}\}$.
+\begin{enumerate}
+\item $\{w \mid w \textnormal{ contains at least three {\tt 1}s}\}$
+\solution{
+\if\isanswerkey1\solPDAMoreOnes\fi
+\begin{align*}
+    S &\to R{\tt 1}R{\tt 1}R{\tt 1}R\\
+    R &\to X \mid XR \mid \epsilon\\
+    X &\to {\tt 0} \mid {\tt 1}\\
+\end{align*}
+}
+\item $\{w \mid w \textnormal{ has length at least 2, and starts and ends with the same symbol}\}$
+\solution{
+\if\isanswerkey1\solPDAMoreOnes\fi
+\begin{align*}
+    S &\to {\tt 0}R{\tt 0} \mid {\tt 1}R{\tt 1}\\
+    R &\to X \mid XR \mid \epsilon\\
+    X &\to {\tt 0} \mid {\tt 1}\\
+\end{align*}
+}
+\item $\{w \mid w \textnormal{ the length of $w$ is odd}\}$
+\solution{
+\if\isanswerkey1\solPDAMoreOnes\fi
+\begin{align*}
+    S &\to X \mid XR\\
+    X &\to {\tt 0} \mid {\tt 1}\\
+    R &\to \epsilon \mid T\\
+    T &\to TT \mid XX\\
+\end{align*}
+}
+\item $\{w \mid w \textnormal{ the length of $w$ is odd and its middle symbol is a {\tt 0}}\}$
+\solution{
+\if\isanswerkey1\solPDAMoreOnes\fi
+\begin{align*}
+    S &\to {\tt 0} \mid XSX\\
+    X &\to {\tt 0} \mid {\tt 1}\\
+\end{align*}
+}
+\end{enumerate}
+
+
+
+
+\item Give state diagrams of PDAs that recognize the following languages.  The input alphabet is $\{{\tt 0},{\tt 1}\}$. 
+
+\begin{enumerate}
+\item $L_1=\{w \mid w \textnormal{ contains more {\tt 1}s than {\tt 0}s}\}$
+\solution{
+\if\isanswerkey1\solPDAMoreOnes\fi
+\begin{tikzpicture}
+\node[state, initial] (q0) {$q_0$};
+\node[state, right of=q0] (q1) {$q_e$};
+\node[state, below of=q1] (q2) {$q_{more {\tt 1}}$};
+\node[state, right of=q1] (q3) {$q_{more {\tt 0}}$};
+\node[state, accepting, right of=q2] (q4) {$q_f$};
+\draw
+(q0) edge[right, above] node{$\epsilon, \epsilon \to \$$} (q1)
+(q1) edge[bend right, left] node{${\tt 1}, \epsilon \to {\tt 1}$} (q2)
+(q2) edge[bend right, right] node{$\epsilon, \epsilon \to \epsilon$} (q1)
+(q2) edge[loop below] node{\makecell{${\tt 1}, \epsilon \to {\tt 1}$ \\ ${\tt 0}, {\tt 1} \to \epsilon$}} (q2)
+(q1) edge[bend left, above] node{${\tt 0}, \epsilon \to {\tt 0}$} (q3)
+(q3) edge[bend left, below] node{$\epsilon, \epsilon \to \epsilon$} (q1)
+(q3) edge[loop right] node{\makecell{${\tt 0}, \epsilon \to {\tt 0}$ \\ ${\tt 1}, {\tt 0} \to \epsilon$}} (q3)
+(q2) edge[right, above] node{$\epsilon, \$ \to \epsilon$} (q4)
+;
+\end{tikzpicture}
+}
+\item $L_2=\{w \mid \textnormal{any prefix of $w$ (except the empty string) contains more {\tt 1}s than {\tt 0}s}\}$
+\solution{
+\if\isanswerkey1\solPDAMoreOnesPrefix\fi
+\begin{tikzpicture}
+\node[state, initial] (q0) {$q_0$};
+\node[state, right of=q0] (q1) {$q_e$};
+\node[state, below of=q1] (q2) {$q_{more {\tt 1}}$};
+\node[state, right of=q1] (q3) {$q_{more {\tt 0}}$};
+\node[state, accepting, right of=q2] (q4) {$q_f$};
+\draw
+(q0) edge[right, above] node{$\epsilon, \epsilon \to \$$} (q1)
+(q1) edge[bend right, left] node{${\tt 1}, \epsilon \to {\tt 1}$} (q2)
+(q2) edge[bend right, right] node{$\epsilon, \epsilon \to \epsilon$} (q1)
+(q2) edge[loop below] node{\makecell{${\tt 1}, \epsilon \to {\tt 1}$ \\ ${\tt 0}, {\tt 1} \to \epsilon$}} (q2)
+(q1) edge[right, above] node{${\tt 0}, \epsilon \to {\tt 0}$} (q3)
+(q2) edge[right, above] node{$\epsilon, \$ \to \epsilon$} (q4)
+;
+\end{tikzpicture}
+}
+\item $L_3 = \{w \mid \textnormal{the length of $w$ is even and its middle symbols are both {\tt 0}s}\}$
+\solution{
+\if\isanswerkey1\solPDAEvenLengthMiddleZeros\fi
+\begin{tikzpicture}
+\node[state, initial] (q0) {$q_0$};
+\node[state, right of=q0] (q1) {$q_1$};
+\node[state, below of=q1] (q2) {$q_2$};
+\node[state, right of=q2, accepting] (q3) {$q_3$};
+\draw
+(q0) edge[right, above] node{$\epsilon, \epsilon \to \$$} (q1)
+(q1) edge[below, right] node{$\{{\tt 0}, {\tt 0}\}, \epsilon \to \epsilon$} (q2)
+(q1) edge[loop above] node{\makecell{${\tt 1}, \epsilon \to {\tt 1}$ \\ ${\tt 0}, \epsilon \to {\tt 0}$}} (q1)
+(q2) edge[right, above] node{$\epsilon, \$ \to \epsilon$} (q3)
+(q2) edge[loop below] node{\makecell{${\tt 1}, \epsilon \to {\tt 1}$ \\ ${\tt 0}, \epsilon \to {\tt 0}$}} (q2)
+;
+\end{tikzpicture}
+}
+\end{enumerate}
+
+
+\item (2.6b) Give a context-free grammar generating the following language.
+%\begin{enumerate}
+%\item 
+
+The complement of the language $\{{\tt a}^n {\tt b}^n \mid n \ge 0\}$
+\solution{
+\if\isanswerkey1\solCFGComplementAnBn\fi
+\begin{align*}
+    S &\to R{\tt ba}R \mid {\tt a}TF \mid TF{\tt b}\\
+    R &\to X \mid XR \mid \epsilon\\
+    X &\to {\tt a} \mid {\tt b}\\
+    T &\to {\tt a} \mid {\tt a}T \mid \epsilon\\
+    F &\to {\tt b} \mid {\tt b}F \mid \epsilon\\
+\end{align*}
+}
+%\item $\{w\#x \mid w^{\cal R} \textnormal{ is a substring of $x$ for } w,x \in \{0,1\}^*\}$
+%\solution{
+%\if\isanswerkey1\solCFGPoundSubstring\fi
+%}
+%\end{enumerate}
+
+
+\item (2.9 \& 2.10 modified) Consider the language
+\[A = \{{\tt a}^i {\tt b}^j {\tt c}^k \mid i = j \textnormal{ or } j = k \textnormal{ where } i,j,k \ge 0\}.\]
+\begin{enumerate}
+\item Give a context-free grammar that generates $A$.
+\solution{
+\if\isanswerkey1\solEqualijOrjkCFG\fi
+\begin{align*}
+    S &\to TK \mid GF\\
+    T &\to {\tt a} \mid {\tt a}T \mid \epsilon\\
+    F &\to {\tt c} \mid {\tt c}F \mid \epsilon\\
+    K &\to \epsilon \mid {\tt b}K{\tt c}\\
+    G &\to \epsilon \mid {\tt a}G{\tt b}\\
+\end{align*}
+}
+\item Is your grammar from (a) ambiguous? Why or why not?
+\solution{
+\if\isanswerkey1\solEqualijOrjkAmbiguous\fi
+Yes, for string $s={\tt a}{\tt b}^2{\tt c}^2$, after convert $S$ to $TK$, we can either first convert the $T$ into ${\tt a}$ or convert $K$ into ${\tt b}K{\tt c}$ and then convert ${\tt b}K{\tt c}$ into ${\tt b}^2{\tt c}^2$. Which gives it two separate parse trees, so that the CFG from part (a) is ambiguous.
+}
+\item Give a state diagram of a PDA that recognizes $A$.
+\solution{
+\if\isanswerkey1\solEqualijOrjkPDA\fi
+\begin{tikzpicture}
+\node[state, initial] (q0) {$q_0$};
+\node[state, right of=q0] (q1) {$q_1$};
+\node[state, right of=q1] (q2) {$q_2$};
+\node[state, right of=q2] (q3) {$q_3$};
+\node[state, below of=q1] (q4) {$q_4$};
+\node[state, right of=q4] (q5) {$q_5$};
+\node[state, right of=q5] (q6) {$q_6$};
+\node[state, right of=q6, accepting] (q7) {$q_7$};
+\draw
+(q0) edge[right, above] node{$\epsilon, \epsilon \to \$$} (q1)
+(q1) edge[loop above] node{${\tt a}, \epsilon \to \epsilon$} (q1)
+(q1) edge[right, above] node{${\tt b}, \epsilon \to {\tt b}$} (q2)
+(q2) edge[loop above] node{${\tt b}, \epsilon \to {\tt b}$} (q2)
+(q2) edge[right, above] node{${\tt c}, {\tt b} \to \epsilon$} (q3)
+(q3) edge[loop above] node{${\tt c}, {\tt b} \to \epsilon$} (q3)
+(q1) edge[below, left] node{${\tt a}, \epsilon \to {\tt a}$} (q4)
+(q4) edge[loop below] node{${\tt a}, \epsilon \to {\tt a}$} (q4)
+(q4) edge[right, above] node{${\tt b}, {\tt a} \to \epsilon$} (q5)
+(q5) edge[loop below] node{${\tt b}, {\tt a} \to \epsilon$} (q5)
+(q5) edge[right, above] node{${\tt a}, \epsilon \to \epsilon$} (q6)
+(q6) edge[loop below] node{${\tt a}, \epsilon \to \epsilon$} (q6)
+
+(q3) edge[right, right] node{$\epsilon, \$ \to \epsilon$} (q7)
+(q6) edge[right, above] node{$\epsilon, \$ \to \epsilon$} (q7)
+;
+\end{tikzpicture}
+}
+\end{enumerate}
+
+
+
+\end{enumerate}
+\newpage
+\subsubsection*{Answers}
+\begin{enumerate}
+\item[0.] Answers to warm-up problem:
+
+\begin{minipage}{.5\linewidth}
+\begin{enumerate}
+\item What are the variables of $G$?\quad \underline{$R, S, T, X$}
+\item What are the terminals of $G$?\quad \underline{${\tt a}, {\tt b}$}
+\item Which is the start variable of $G$?\quad\underline{$R$}
+\item Give three strings in $L(G)$.\quad\underline{${\tt ab}, {\tt ba}, {\tt aab},\ldots$}
+\item Give three strings {\em not} in $L(G)$.\quad\underline{$\epsilon, {\tt a}, {\tt aba},\ldots$}
+\item True or False: $T \Rightarrow {\tt aba}$. \quad \underline{False}
+\item True or False: $T \stackrel{*}{\Rightarrow} {\tt aba}$.\quad \underline{True}
+\item True or False: $T \Rightarrow T$. \quad \underline{False}
+\setcounter{parts}{\value{enumii}}
+\end{enumerate}
+\end{minipage}
+\begin{minipage}{.5\linewidth}
+\begin{enumerate}
+\setcounter{enumii}{\value{parts}}
+\item True or False: $T \stackrel{*}{\Rightarrow} T$. \quad \underline{True}
+\item True or False: $XXX \stackrel{*}{\Rightarrow} {\tt aba}$.  \quad \underline{True}
+\item True or False: $X \stackrel{*}{\Rightarrow} {\tt aba}$. \quad \underline{False}
+\item True or False: $T \stackrel{*}{\Rightarrow} XX$. \quad \underline{True}
+\item True or False: $T \stackrel{*}{\Rightarrow} XXX$. \quad \underline{True}
+\item True or False: $S \stackrel{*}{\Rightarrow} \epsilon$. \quad \underline{False}
+\item Give a description in English of $L(G)$.
+\underline{All non-palindromes.}
+\end{enumerate}
+\end{minipage}
+\end{enumerate}
+
+
+
+
+
+\end{document}

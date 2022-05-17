@@ -1,0 +1,183 @@
+\documentclass[11pt]{article}
+
+\usepackage{enumitem}
+
+
+%%TO EDIT
+\newcommand{\dueclassnumber}{27}
+\newcommand{\assignmentnum}{11}
+
+% CHANGE issolution{0} to issolution{1} for homework submission.
+% WRITE solutions inside the \solution{} commands.
+% or, you can use \if\issolution1 … \fi
+
+\def\issolution{1}
+\def\myname{Allen Liu} % My name goes here
+\def\mysec{01} % Section number goes here
+\def\myCM{374} % Campus Mailbox goes here
+
+\input{../common/flags}
+\newcommand\vv[2]{\begin{bmatrix} {#1} \cr {#2} \end{bmatrix}}
+
+% Leave the next line alone. This is for my answer keys.
+%\def\isanswerkey{1}
+
+\input{../common/header474}
+\if\isanswerkey1\input{macsse474-key}\fi
+
+
+\usetikzlibrary{positioning}
+
+\begin{document}
+
+\assignmentnametitlestuff
+
+
+\begin{enumerate}
+
+
+
+\item {\bf Virus checker.} Suppose you have a computer using some operating system under which all programs run.
+Consider a program as an entity that takes a string in $\Sigma^*$ as input and then does
+something. Say that a program $P$ {\em spreads a virus} on input $w$ if running $P$ with input
+$w$ causes the operating system to be altered, otherwise say that $P$ is {\em safe} on input $w$.
+A virus tester is a program that on input $\langle P, w\rangle$ outputs {\tt YES} if $P$ is safe on input $w$
+and {\tt NO} otherwise. Prove that if there is the actual possibility of a virus, that is, there
+is some program $P$ and some input $w$ that will cause the operating system to be altered,
+then there is no virus tester that is always correct.
+
+Hint: Suppose IsSafe is a virus tester that is always correct. Create a program $D$ (give
+a description similar to a TM description) that, given a description of a program $P$ as
+input, runs IsSafe on input $\langle P, \langle P \rangle \rangle$, then either does nothing 
+or modifies the operating system, based on the output of IsSafe. Use $D$ to obtain a
+contradiction (you may want to review the proof that $A_\textnormal{TM}$ is undecidable).
+\solution{
+\if\isanswerkey1\solNoVirusChecker\fi
+The virus checker can be treated as deciding language $VIR_\textnormal{Prog}$:
+\begin{equation*}
+    VIR_\textnormal{Prog}=\{ \langle P, w\rangle \mid \textnormal{Program } P \textnormal{ spreads virus on input } w \}
+\end{equation*}
+Suppose to the contrary that there is a virus tester IsSafe that \\
+IsSafe$=$ ``On input $\langle P, w\rangle$
+\begin{enumerate}
+    \item Run $P$ on input $w$
+    \item If $P$ modifies the OS $\to$ \textbf{\textit{Output}} \texttt{YES}
+    \item Otherwise $\to$ \textbf{\textit{Output}} \texttt{NO}''
+\end{enumerate}
+So that we can build a decider for the problem $D$ such that\\
+$D=$ ``On input $\langle P\rangle$, where $P$ is a program
+\begin{enumerate}
+    \item Run IsSafe on input $\langle P, \langle P\rangle\rangle$
+    \item If it outputs \texttt{YES} $\to$ \textit{\textbf{modifies the OS}} and output \texttt{NO}
+    \item Otherwise $\to$ \textbf{\textit{do nothing}} and output \texttt{YES}''
+\end{enumerate}
+So that $D$ does not have a virus $\Longleftrightarrow$ $D$ modifies the operating system, such a program $D$ cannot exist. Hence, there is no such virus tester that tests whether there is a virus on running input $w$ on program $P$
+}
+
+
+\item (5.9) Let $T = \{\langle M \rangle \mid M \textnormal{ is a TM that accepts $w^{\cal R}$ whenever it accepts $w$}\}$. Show $T$ is undecidable, using a reduction argument.
+\solution{
+\if\isanswerkey1\solUndecidableMachinesThatAcceptAllReverses\fi
+Assume to the contrary that there is such a decider $D_\textnormal{T}$ that decides language $T$. So that we can build a decider $R$ that decides language $A_\textnormal{TM}$ as:\\
+$R=$ ``On input $\langle M, w\rangle$, where $M$ is a TM and $w$ is a string
+\begin{enumerate}
+    \item Build a TM $M'$ as following:\\
+    $M'=$ `On input $s$, where $s$ is a string
+    \begin{enumerate}
+        \item If $s\in {\tt 0}{\tt 0}^*{\tt 1}{\tt 1}^*$ \tmAcc
+        \item Otherwise, do the following steps:
+        \begin{itemize}
+            \item run $M$ on $w$
+            \item If $M$ accepts $w$ \tmAcc
+            \item Otherwise \tmRej'
+        \end{itemize}
+    \end{enumerate}
+    \item Run $\langle M'\rangle$ on $D_\textnormal{T}$
+    \item If $D_\textnormal{T}$ accepts $\langle M' \rangle$ \tmAcc
+    \item Otherwise \tmRej''
+\end{enumerate}
+For the string $s\in {\tt 0}{\tt 0}^*{\tt 1}{\tt 1}^*$, since $s^{\cal R}\notin {\tt 0}{\tt 0}^*{\tt 1}{\tt 1}^*$, so that If $\langle M'\rangle$ is accepted, then it means that input string $w$ is accepted by TM $M$. Hence it makes it decides language $A_\textnormal{TM}$. Since language $A_\textnormal{TM}$ is not decidable, so that such a decider $D_\textnormal{T}$ does not exist, so that language $T$ is not decidable
+}
+
+\item (5.30, modified) Prove the undecidability of each of the following languages. [Note: ignore Sipser's instruction to use Rice's theorem. Instead, prove them using reduction arguments.]
+\begin{enumerate}
+\item $INFINITE_\textnormal{TM} = \{\langle M \rangle \mid M \textnormal{ is a TM and $L(M)$ is an infinite language}\}$
+\solution{
+\if\isanswerkey1\solUndecidableInfTM\fi
+Assume there is a decider $D_\textnormal{INF-TM}$ that decides the language $INFINITE_\textnormal{TM}$. So that we can build a decider $R$ that decided the language $A_\textnormal{TM}$:\\
+$R=$ ``On input $\langle M, w\rangle$, where $M$ is a TM and $w$ is a string
+\begin{enumerate}
+    \item Build a TM $M'$ as following:\\
+    $M'=$ `On input $s$, where $s$ is a string
+    \begin{enumerate}
+        \item If $s$ is not infinite \tmAcc
+        \item Otherwise, do the following steps:
+        \begin{itemize}
+            \item run $M$ on $w$
+            \item If $M$ accepts $w$ \tmAcc
+            \item Otherwise \tmRej'
+        \end{itemize}
+    \end{enumerate}
+    \item Run $\langle M'\rangle$ on $D_\textnormal{T}$
+    \item If $D_\textnormal{INF-TM}$ accepts $\langle M' \rangle$ \tmAcc
+    \item Otherwise \tmRej''
+\end{enumerate}
+Since language $A_\textnormal{TM}$ is not decidable, so that language $INFINITE_\textnormal{TM}$ is not decidable
+}
+\item $CONT_\textnormal{TM} = \{\langle M \rangle \mid M \textnormal{ is a TM and } {\tt 1011} \in L(M)\}$
+\solution{
+\if\isanswerkey1\solUndecidableOneZeroOneOne\fi
+Assume there is a decider $D_\textnormal{CONT-TM}$ that decides the language $CONT_\textnormal{TM}$. So that we can build a decider $R$ that decided the language $A_\textnormal{TM}$:\\
+$R=$ ``On input $\langle M, w\rangle$, where $M$ is a TM and $w$ is a string
+\begin{enumerate}
+    \item Build a TM $M'$ as following:\\
+    $M'=$ `On input $s$, where $s$ is a string
+    \begin{enumerate}
+        \item If $s$ is not infinite \tmAcc
+        \item Otherwise, do the following steps:
+        \begin{itemize}
+            \item run $M$ on $w$
+            \item If $M$ accepts $w$ \tmAcc
+            \item Otherwise \tmRej'
+        \end{itemize}
+    \end{enumerate}
+    \item Run $\langle M'\rangle$ on $D_\textnormal{T}$
+    \item If $D_\textnormal{CONT-TM}$ accepts $\langle M' \rangle$ \tmAcc
+    \item Otherwise \tmRej''
+\end{enumerate}
+Since language $A_\textnormal{TM}$ is not decidable, so that language $CONT_\textnormal{TM}$ is not decidable
+}
+\item $ALL_\textnormal{TM} = \{\langle M \rangle \mid M \textnormal{ is a TM and } L(M) = \Sigma^*\}$
+\solution{
+\if\isanswerkey1\solUndecidableAllTM\fi
+Assume there is a decider $D_\textnormal{ALL-TM}$ that decides the language $ALL_\textnormal{TM}$. So that we can build a decider $R$ that decided the language $A_\textnormal{TM}$:\\
+$R=$ ``On input $\langle M, w\rangle$, where $M$ is a TM and $w$ is a string
+\begin{enumerate}
+    \item Build a TM $M'$ as following:\\
+    $M'=$ `On input $s$, where $s$ is a string
+    \begin{enumerate}
+        \item If $s$ is not infinite \tmAcc
+        \item Otherwise, do the following steps:
+        \begin{itemize}
+            \item run $M$ on $w$
+            \item If $M$ accepts $w$ \tmAcc
+            \item Otherwise \tmRej'
+        \end{itemize}
+    \end{enumerate}
+    \item Run $\langle M'\rangle$ on $D_\textnormal{T}$
+    \item If $D_\textnormal{ALL-TM}$ accepts $\langle M' \rangle$ \tmAcc
+    \item Otherwise \tmRej''
+\end{enumerate}
+Since language $A_\textnormal{TM}$ is not decidable, so that language $ALL_\textnormal{TM}$ is not decidable
+}
+\end{enumerate}
+
+
+
+
+\end{enumerate}
+
+
+
+
+\end{document}

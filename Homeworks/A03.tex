@@ -1,0 +1,251 @@
+\documentclass[11pt]{article}
+
+%%TO EDIT
+\newcommand{\dueclassnumber}{7}
+\newcommand{\assignmentnum}{3}
+\renewcommand{\emptyset}{\varnothing}
+\usepackage{makecell}
+
+% CHANGE issolution{0} to issolution{1} for homework submission.
+% WRITE solutions inside the \solution{} commands.
+% or, you can use \if\issolution1 … \fi
+
+\def\issolution{1}
+\def\myname{Allen Liu} % My name goes here
+\def\mysec{01} % Section number goes here
+\def\myCM{374} % Campus Mailbox goes here
+
+\input{../common/flags}
+\newcommand\vv[2]{\begin{bmatrix} {#1} \cr {#2} \end{bmatrix}}
+
+% Leave the next line alone. This is for my answer keys.
+%\def\isanswerkey{1}
+
+\input{../common/header474}
+\if\isanswerkey1\input{macsse474-key}\fi
+
+\begin{document}
+
+\assignmentnametitlestuff
+
+
+\if\isanswerkey0
+{\bf Please follow the homework guidelines from A01.}
+
+\fi
+
+
+\begin{enumerate}
+
+\item (1.17) 
+\begin{enumerate}
+\item Give an NFA recognizing the language $({\tt 01} \cup {\tt 001} \cup {\tt 010})^*$.
+\item Convert this NFA to an equivalent DFA. Give only the portion of the DFA that is reachable from the start state. (Hint: 7 states)
+\end{enumerate}
+\solution{
+\if\isanswerkey1\solNFAThenDFA\fi
+For language {\tt 01}:
+\newline
+\begin{tikzpicture}
+\node[state, initial] (q0) {$q_0$};
+\node[state, right of=q0] (q1) {$q_1$};
+\node[state, right of=q1, accepting] (q2) {$q_2$};
+\draw
+(q0) edge[right, above] node{\tt 0} (q1)
+(q1) edge[right, above] node{\tt 1} (q2);
+\end{tikzpicture}
+\newline
+For language $\tt{001}$:
+\newline
+\begin{tikzpicture}
+\node[state, initial] (q0) {$q_0$};
+\node[state, right of=q0] (q1) {$q_1$};
+\node[state, right of=q1] (q2) {$q_2$};
+\node[state, right of=q2, accepting] (q3) {$q_3$};
+\draw
+(q0) edge[right, above] node{\tt 0} (q1)
+(q1) edge[right, above] node{\tt 0} (q2)
+(q2) edge[right, above] node{\tt 1} (q3);
+\end{tikzpicture}
+\newline
+For language $\tt{010}$:
+\newline
+\begin{tikzpicture}
+\node[state, initial] (q0) {$q_0$};
+\node[state, right of=q0] (q1) {$q_1$};
+\node[state, right of=q1] (q2) {$q_2$};
+\node[state, right of=q2, accepting] (q3) {$q_3$};
+\draw
+(q0) edge[right, above] node{\tt 0} (q1)
+(q1) edge[right, above] node{\tt 1} (q2)
+(q2) edge[right, above] node{\tt 0} (q3);
+\end{tikzpicture}
+\newline
+For language $\tt{01}\cup\tt{001}\cup\tt{010}$:
+\newline
+\begin{tikzpicture}
+\node[state, initial] (q0) {$q_0$};
+\node[state, right of=q0] (q4) {$q_4$};
+\node[state, right of=q4] (q5) {$q_5$};
+\node[state, right of=q5] (q6) {$q_6$};
+\node[state, right of=q6, accepting] (q7) {$q_7$};
+\node[state, above of=q4] (q1) {$q_1$};
+\node[state, right of=q1] (q2) {$q_2$};
+\node[state, right of=q2, accepting] (q3) {$q_3$};
+\node[state, below of=q4] (q8) {$q_8$};
+\node[state, right of=q8] (q9) {$q_9$};
+\node[state, right of=q9] (q10) {$q_{10}$};
+\node[state, right of=q10, accepting] (q11) {$q_{11}$};
+\draw
+(q0) edge[right, above] node{$\epsilon$} (q1)
+(q0) edge[right, above] node{$\epsilon$} (q4)
+(q0) edge[right, above] node{$\epsilon$} (q8)
+(q1) edge[right, above] node{\tt 0} (q2)
+(q2) edge[right, above] node{\tt 1} (q3)
+(q4) edge[right, above] node{\tt 0} (q5)
+(q5) edge[right, above] node{\tt 0} (q6)
+(q6) edge[right, above] node{\tt 1} (q7)
+(q8) edge[right, above] node{\tt 0} (q9)
+(q9) edge[right, above] node{\tt 1} (q10)
+(q10) edge[right, above] node{\tt 0} (q11);
+\end{tikzpicture}
+\newline
+After simplification, get:
+\newline
+\begin{tikzpicture}
+\node[state, initial] (q0) {$q_0$};
+\node[state, right of=q0] (q1) {$q_1$};
+\node[state, right of=q1, accepting] (q2) {$q_2$};
+\node[state, below of=q1] (q3) {$q_3$};
+\node[state, right of=q3, accepting] (q4) {$q_4$};
+\draw
+(q0) edge[right, above] node{\tt 0} (q1)
+(q1) edge[below, right] node{\tt 0} (q3)
+(q1) edge[right, above] node{\tt 1} (q2)
+(q2) edge[below, right] node{\tt 0} (q4)
+(q3) edge[right, above] node{\tt 1} (q4)
+;
+\end{tikzpicture}
+\newline
+Hence, the language ${\left(\tt{01}\cup\tt{001}\cup\tt{010}\right)}^*$ can be recognized by the following NFA:
+\newline
+\begin{tikzpicture}
+\node[state, initial, accepting] (q0) {$q_0$};
+\node[state, above of=q0] (q1) {$q_1$};
+\node[state, right of=q1] (q2) {$q_2$};
+\node[state, right of=q2, accepting] (q3) {$q_3$};
+\node[state, below of=q2] (q4) {$q_4$};
+\node[state, right of=q4, accepting] (q5) {$q_5$};
+\draw
+(q0) edge[above, right] node{$\epsilon$} (q1)
+(q1) edge[right, above] node{\tt 0} (q2)
+(q2) edge[below, right] node{\tt 0} (q4)
+(q2) edge[right, above] node{\tt 1} (q3)
+(q3) edge[below, right] node{\tt 0} (q5)
+(q4) edge[right, above] node{\tt 1} (q5)
+(q3) edge[bend right, above] node{$\epsilon$} (q1)
+(q5) edge[bend left, below] node{$\epsilon$} (q0)
+;
+\end{tikzpicture}
+\newline
+After converting it into a DFA, it becomes:
+\newline
+\begin{tikzpicture}
+\node[state, initial, accepting] (q01) {$q_{0, 1}$};
+\node[state, right of=q01] (q2) {$q_2$};
+\node[state, right of=q2, accepting] (q013) {$q_{0, 1, 3}$};
+\node[state, below of=q2] (q4) {$q_4$};
+\node[state, right of=q4, accepting] (q015) {$q_{0, 1, 5}$};
+\node[state, right of=q013] (q25) {$q_{2, 5}$};
+\node[state, below of=q01] (qe) {$\emptyset$};
+\draw
+(q01) edge[right, above] node{\tt 0} (q2)
+(q01) edge[below, right] node{\tt 1} (qe)
+(q2) edge[right, above] node{\tt 0} (q013)
+(q2) edge[below, right] node{\tt 1} (q4)
+(q013) edge[bend left, above] node{\tt 0} (q25)
+(q013) edge[bend left, above] node{\tt 1} (qe)
+(q25) edge[bend left, below] node{\tt 1} (q013)
+(q25) edge[left, below] node{\tt 0} (q4)
+(qe) edge[loop left] node{\tt 0,1} (qe)
+(q4) edge[bend left, below] node{\tt 0} (qe)
+(q4) edge[right, below] node{\tt 1} (q015)
+(q015) edge[left, above] node{\tt 0} (q2)
+(q015) edge[bend left, below] node{\tt 1} (qe)
+;
+\end{tikzpicture}
+}
+
+
+\item (1.21) Use the procedure described in Lemma 1.60 [or Worksheet 6] to convert the following finite automata to regular expressions.
+\begin{enumerate}
+\item 
+\begin{tikzpicture}
+\node[state, initial] (1) {$1$};
+\node[state, accepting, below of=1] (2) {$2$};
+\draw 
+(1) edge[loop right] node{{\tt a}} (1)
+(2) edge[loop right] node{{\tt a}} (2)
+(1) edge[bend left, right] node{{\tt b}} (2)
+(2) edge[bend left, left] node{{\tt b}} (1)
+;
+\end{tikzpicture}
+\solution{
+\if\isanswerkey1\solNFAToRegExpA\fi
+The finite automata can be converted into the following regular expression: 
+\newline
+${\tt{a}}^*\tt{b}{\tt{a}}^*{\left(b{\tt{a}}^*\tt{b}{\tt{a}}^*\right)}^*$
+}
+
+\item 
+\begin{tikzpicture}
+\node[state, initial, accepting] at (0,0) (1) {$1$};
+\node[state] at (3,0) (2) {$2$};
+\node[state, accepting] at (1.5,-3) (3) {$3$};
+\draw 
+(1) edge[above] node{{\tt a}, {\tt b}} (2)
+(2) edge[loop right] node{{\tt a}} (2)
+(2) edge[bend left, right] node{{\tt b}} (3)
+(3) edge[bend left, left] node{{\tt b}} (2)
+(3) edge[left] node{{\tt a}} (1)
+;
+\end{tikzpicture}
+\solution{
+\if\isanswerkey1\solNFAToRegExpB\fi
+Assume $\Sigma=\{\tt{a, b}\}$, the finite automata can be converted \\ into the following regular expression:
+\newline\newline
+${\left(\left\{\tt{a}, \tt{b}\right\}{\tt{a}}^*\tt{b}{\left(\tt{b}\tt{a}^*\tt{b}\right)}^*\tt{a}\right)}^*\cup\left\{\tt{a}, \tt{b}\right\}{\tt{a}}^*\tt{b}{\left(\tt{b}\tt{a}^*\tt{b}\right)}^*$
+}
+\end{enumerate}
+
+
+\item (1.41) For languages $A$ and $B$ over the same alphabet $\Sigma$, let the {\bf perfect shuffle} of $A$ and $B$ be the language
+\[\{w \mid w = a_1b_1\cdots a_kb_k, \textnormal{ where } a_1\cdots a_k \in A \textnormal{ and } b_1\cdots b_k \in B \textnormal{ for some $k \ge 0$, } \textnormal{ where each } a_i, b_i \in \Sigma\}.\]
+Show that the class of regular languages is closed under perfect shuffle. (Your answer should define an appropriate finite automaton. You don't need to prove it works.)
+\solution{
+\if\isanswerkey1\solPerfectShuffle\fi
+Assume NFA $M_A\left(Q_A, \Sigma, \delta_A, q_A, F_A\right)$ and $M_B\left(Q_B, \Sigma, \delta_B, q_B, F_B\right)$ recignized language $A$ and $B$, where $A=L\left(M_A\right)$ and $B=L\left(M_B\right)$. We can construct a NFA $M\left(Q, \Sigma, \delta, q_0, F\right)$ that recignizes the perfect suffle of language $A$ and $B$:
+\begin{enumerate}
+    \item $Q$: $Q = Q_A \cup Q_B$
+    \item $\Sigma$: All alphabets $\Sigma$ are the same
+    \item $\delta$:
+    \begin{equation*}
+        \delta(q, d)=
+        \begin{cases}
+            q=q_0 ~\text{and} ~d=\epsilon: & \delta(q, d) = \left\{q_A\right\}  \\
+            q\in Q_A ~\text{and} ~d\in A: & \delta(q, d)=\delta_A\left(q, d\right) \\
+            q\in F_A ~\text{and} ~d=\epsilon: & \delta(q, d)=\left\{q_B\right\} \\
+            q\in Q_B ~\text{and} ~d\in B: & \delta(q, d)=\delta_B\left(q, d\right) \\
+            q\in F_B ~\text{and} ~d=\epsilon: & \delta(q, d)=\left\{q_0\right\} \\
+        \end{cases}
+    \end{equation*}
+    \item $q_0$: $q_0=q_A$
+    \item $F$: $F=F_A\cup F_B \cup {q_0}$
+\end{enumerate}
+}
+
+
+\end{enumerate}
+
+
+\end{document}

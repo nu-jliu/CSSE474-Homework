@@ -1,0 +1,125 @@
+\documentclass[11pt]{article}
+
+\usepackage{enumitem}
+
+
+%%TO EDIT
+\newcommand{\dueclassnumber}{25}
+\newcommand{\assignmentnum}{10}
+
+% CHANGE issolution{0} to issolution{1} for homework submission.
+% WRITE solutions inside the \solution{} commands.
+% or, you can use \if\issolution1 … \fi
+
+\def\issolution{1}
+\def\myname{Allen Liu} % My name goes here
+\def\mysec{01} % Section number goes here
+\def\myCM{374} % Campus Mailbox goes here
+
+\input{../common/flags}
+\newcommand\vv[2]{\begin{bmatrix} {#1} \cr {#2} \end{bmatrix}}
+
+% Leave the next line alone. This is for my answer keys.
+%\def\isanswerkey{1}
+
+\input{../common/header474}
+\if\isanswerkey1\input{macsse474-key}\fi
+
+
+\usetikzlibrary{positioning}
+
+\begin{document}
+
+\assignmentnametitlestuff
+
+%In this assignment, you may use any TM constructions from class, such as $D_{\textnormal{A-DFA}}$, $D_{\textnormal{A-NFA}}$,$D_\textnormal{E-DFA}$, $D_\textnormal{EQ-DFA}$, $D_\textnormal{EQ-REX}$. You may also use any known results from previous chapters of the textbook, e.g. that from any regular expression $R$, one can construct (and in particular, a Turing machine can construct) a DFA recognizing $L(R)$, likewise for CFGs and PDAs, etc.
+%
+%To show a language is decidable, it is sufficient to give a high-level description of a Turing machine that decides the language.
+
+
+
+\begin{enumerate}
+
+\item (4.7) Let {\cal B} be the set of all infinite sequences over $\{0,1\}$. Show that ${\cal B}$ is uncountable using a proof by diagonalization.
+\solution{
+\if\isanswerkey1\solDiagonalizationZeroOneSequences\fi
+\textsc{Proof}: Suppose to the contrary that there is a \textit{\textbf{one-to-one}} correspondence $f: {\cal B} \to \mathbbm{N}$. So that $\forall ~x \in {\cal B} \mid f(x)\in \mathbbm{N} ~\textnormal{and } f^{-1}(f(x))=x$. Consider for a correspondence $f$ such that $f(\texttt{1})=\texttt{000000}$..., $f(\texttt{2})=\texttt{111111}$..., $f(\texttt{3})=\texttt{010101}$..., $f(\texttt{4})=\texttt{101010}$..., $f(5)=$ ...,  which is shown in the table below:
+\begin{center}
+    \begin{tabular}{c|c}
+        $n$ & $f(n)$ \\
+        \hline
+        \texttt{1} & \texttt{000000}... \\
+        \texttt{2} & \texttt{111111}... \\
+        \texttt{3} & \texttt{010101}... \\
+        \texttt{4} & \texttt{101010}... \\
+        $\vdots$ & $\vdots$
+    \end{tabular}\\
+\end{center}
+So that we can construct the $x$ such that $\forall n \in \mathbbm{N} \mid f(n) \neq x$. So that to ensure that $x\neq f(\texttt{1})$, we take the flip digit of the first digit of $f(\texttt{1})=\underline{\texttt{0}}\texttt{00000}$..., which is \texttt{1}, to ensure that $x\neq f(\texttt{2})$, second digit is the flip of second digit of $f(\texttt{2})=\texttt{1}\underline{\texttt{1}}\texttt{1111}$..., which is \texttt{0}, to ensure that $x\neq f(\texttt{3})$, the third digit is the flip of third digit of $f(\texttt{3})=\texttt{01}\underline{\texttt{0}}\texttt{101}$..., which is \texttt{1}, to ensure that $x\neq f(\texttt{4})$,  the fourth digit is the flip of fourth digit of $f(\texttt{4})=\texttt{101}\underline{\texttt{0}}\texttt{10}$..., which is \texttt{1}, etc. So that $x=\texttt{1011}$..., which $\forall ~n \mid f(n)\neq x$. Hence $\exists ~x \in {\cal B} \mid \left\{\forall ~n \mid f(n)\neq x\right\}$, which contradicts the assumption, so that ${\cal B}$ is uncountable. 
+}
+
+
+\item In class, we showed that $\mathbbm{R}$ was uncountable by giving a diagonalization argument where we were able to build a number, $x$, that was not in the alleged 1-1 correspondence between $\mathbbm{N}$ and $\mathbbm{R}$ by making the $i$th digit of $x$ (after the decimal point) different than the $i$th digit of the $i$th element of the list.  Why doesn't this same argument work to show that the set of rational numbers $\mathbbm{Q}$ is uncountable?  
+\solution{
+\if\isanswerkey1\solWhyQNotUncountable\fi
+Since if we construct the $x$ in the same procedure as that in \textsc{Proof} of $\mathbbm{R}$ is not countable, we have to construct a $\mathbbm{R}$ such that $i^{\textnormal{th}}$ digit of $x$ is different from that in $f(n)$. By doing so we might end up with a $x$ that has infinite digits with no repeating pattern, which makes it irrational. Hence $x \notin \mathbbm{Q}$. So that this proof does not work for rational set $\mathbbm{Q}$.
+}
+
+\item (4.30) Let $A$ be a Turing-recognizable language consisting of descriptions of Turing machines, $A = \{\langle M_1 \rangle, \langle M_2 \rangle, \ldots \}$, where every $M_i$ is a decider. Prove that some decidable language $T$ is not decided by any decider $M_i$ whose description appears in $A$. (Hints: You may find it helpful to consider an enumerator for $A$ that outputs TM descriptions in a specific order $\langle M_1 \rangle, \langle M_2 \rangle, \ldots$, and also consider all strings over the alphabet in a specific order: $\Sigma^* = \{s_1, s_2, \ldots\}$. Proof suggestion: build a decider $D$ that explicitly constructs $T = L(D)$ so that it is different from every $L(M_i)$.)
+\solution{
+\if\isanswerkey1\solDecidableLangNotCoveredByDescriptionsOfDeciders\fi
+Since language $A$ is Turing-recognizable, so that we can build a $E_\textnormal{A}$ that enumerates language $A$, where its output is in order $\langle M_1\rangle, \langle M_2\rangle, ...$, and consider all strings over the alphabet in a specific order $\Sigma^*=s_1, s_2, s_3$, ... First, we can build decider $D_\textnormal{E-A}$ that decides whether a description of TM accept a string as following:\\
+$D_\textnormal{E-A}=$ ``On input $\langle w, \langle M\rangle\rangle$, where $w$ is string and $\langle M\rangle$ is a description of a Turing-machine,
+\begin{enumerate}
+    \item Run $w$ on TM $M$
+    \begin{enumerate}
+        \item If it accept \tmAcc
+        \item Otherwise \tmRej''
+    \end{enumerate}
+\end{enumerate}
+And this problem can be converted to language $B=\left\{w \mid \left(\forall ~\langle M_i\rangle \in A \mid M_i \textnormal{ rejects } w\right)\right\}$, we can construct a decider $D_\textnormal{B}$ that decides language $B$ as:\\
+$D_\textnormal{B}=$ ``On input $w$,
+\begin{enumerate}
+    \item If $w\notin\Sigma^*$ \tmRej
+    \item Repeat step i$-$ii over $i=1, 2, 3, ..., n$
+    \begin{enumerate}
+        \item Run $D_\textnormal{E-A}$ on input $\langle w, \langle M_i\rangle\rangle$
+        \item If it accepts \tmRej
+    \item Otherwise \tmAcc''
+    \end{enumerate}
+\end{enumerate}
+}
+
+
+\item (5.10) Consider the problem of determining whether a two-tape Turing machine ever writes a non-blank symbol on its second tape when it is run on input $w$. Formulate this problem as a language and show that it is undecidable.
+\solution{
+\if\isanswerkey1\solUndecidableTMWritesNonblankSecondTape\fi
+Define the problem as a language 
+\begin{equation*}
+    WNB_\textnormal{TM}=\left\{\langle M, w\rangle \mid M\textnormal{ write non-blank symbol when running input} ~w\right\}
+\end{equation*}
+\textsc{Proof}: Suppose to the contrary that there is a $D_\textnormal{WNB-TM}$ that decides language $WNB_\textnormal{TM}$
+Then we can construct a TM $M'$ as following:\\
+$M'=$ ``On input $\langle M, w\rangle$, 
+\begin{enumerate}
+    \item Run $M$ on $w$ using only its first tape
+    \item If it accept, write a symbol $\sigma \in \Sigma$ on its second tape \tmAcc
+    \item Otherwise, halt and \tmRej''
+\end{enumerate}
+Then we can construct a TM $M''$ such that it decides language $A_\textnormal{TM}$ as following:\\
+$M''=$ ``On input $\langle M, w\rangle$,
+\begin{enumerate}
+    \item Run $D_\textnormal{WNB-TM}$ on input $\langle M', \langle M, w\rangle\rangle$
+    \item If it accept \tmAcc
+    \item Otherwise \tmRej''
+\end{enumerate}
+And it makes $A_\textnormal{TM}$ decidable. So that $WNB_\textnormal{TM}$ is decidable $\Longleftrightarrow$ $A_\textnormal{TM}$ is decidable. Since $A_\textnormal{TM}$ is not decidable, language $WNB_\textnormal{TM}$ is not decidable
+}
+
+
+\end{enumerate}
+
+
+
+
+\end{document}

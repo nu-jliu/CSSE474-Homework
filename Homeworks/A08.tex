@@ -1,0 +1,211 @@
+\documentclass[11pt]{article}
+
+\usepackage{enumitem}
+
+
+%%TO EDIT
+\newcommand{\dueclassnumber}{21}
+\newcommand{\assignmentnum}{8}
+
+% CHANGE issolution{0} to issolution{1} for homework submission.
+% WRITE solutions inside the \solution{} commands.
+% or, you can use \if\issolution1 … \fi
+
+\def\issolution{1}
+\def\myname{Allen Liu} % My name goes here
+\def\mysec{01} % Section number goes here
+\def\myCM{374} % Campus Mailbox goes here
+
+\input{../common/flags}
+\newcommand\vv[2]{\begin{bmatrix} {#1} \cr {#2} \end{bmatrix}}
+
+% Leave the next line alone. This is for my answer keys.
+%\def\isanswerkey{1}
+
+\input{../common/header474}
+\if\isanswerkey1\input{macsse474-key}\fi
+
+
+\usetikzlibrary{positioning}
+
+\begin{document}
+
+\assignmentnametitlestuff
+
+
+\if\isanswerkey0
+{\bf Please follow the homework guidelines from A01.}
+
+\fi
+
+
+\begin{enumerate}
+
+\item (3.15) Show that the collection of decidable languages is closed under the operation of
+\begin{enumerate}
+\item union
+\item concatenation
+\item star
+\item complementation
+\item intersection
+\end{enumerate}
+\solution{
+\if\isanswerkey1\solDecidableClosures\fi
+Assume we have a Turing machine $M_A$ that is decidable for language $A$ and a Turing machine that is decidable for language $B$. 
+\begin{enumerate}
+    \item For the union, we can build a TM $M$ that is decidable for language $A\cup B$. For a input string $s$, the TM is constructed as:
+    \begin{itemize}
+        \item Run input string $s$ on $M_A$
+        \begin{itemize}
+            \item If accepted by $M_A$ $\to$ accept
+            \item If not, rewind to the beginning and run the string $s$ in $M_B$
+            \begin{itemize}
+                \item If accepted by $M_B$ $\to$ accept
+                \item If not $\to$ reject
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+    \item For the concatenation, we can build a TM $M$ that is decidable for language $AB$. For a input $s$, the TM is constructed as:
+    \begin{itemize}
+        \item Divide the string $s$ into two parts $s_1$ and $s_2$ 
+        \item Run input string $s_1$ on $M_A$
+        \begin{itemize}
+            \item If $s_1$ is accepted by $M_A$, run string $s_2$ on $M_B$
+            \begin{itemize}
+                \item If $s_2$ accepted by $M_B$ $\to$ accept
+                \item If not $\to$ reject
+            \end{itemize}
+            \item If not $\to$ reject
+        \end{itemize}
+    \end{itemize}
+    \item For star, we can build a TM $M$ that is decidable for language $A^*$. For non-empty input string $s$, the TM is constructed as:
+    \begin{enumerate}
+        \item Divide the non-empty string $s$ into two parts $s_1$ and $s_2$, where string $s_2$ can be $\epsilon$
+        \item Run $M_A$ on string $s_1$
+        \begin{itemize}
+            \item If string $s_1$ is accepted by $M_A$
+            \begin{itemize}
+                \item If the string $s_2$ is $\epsilon$ $\to$ accept
+                \item If not, let $s_2$ be string $s$ in step ii, repeat step ii
+            \end{itemize}
+            \item If not $\to$ reject
+        \end{itemize}
+    \end{enumerate}
+    \item For conplementation, we can build a TM $M$ that is decidable for language $\overline{A}$. The $M$ is constructed by making all accept states into reject state and reject states into accept state.
+    \item For intersection, we can build a TM $M$ that is decidable for language $A \cap B$. For a input string $s$, the $M$ is built as:
+    \begin{itemize}
+        \item Run string $s$ on $M_A$
+        \begin{itemize}
+            \item If $s$ is accepted by $M_A$, rewind to the beginning and run it on $M_B$
+            \begin{itemize}
+                \item If accepted by $M_B$ $\to$ accept
+                \item If not $\to$ reject
+            \end{itemize}
+            \item If not $\to$ reject
+        \end{itemize}
+    \end{itemize}
+\end{enumerate}
+}
+
+
+
+\item (3.16abcd) Show that the collection of Turing-recognizable languages is closed under the operation of
+\begin{enumerate}
+\item union
+\item concatenation
+\item star
+\item intersection
+\end{enumerate}
+\solution{
+\if\isanswerkey1\solTRecognizableClosures\fi
+Assume there is a Turing machine $M_A$ that is recognizable for language $A$ and a Turing machine $M_B$ that is recognizable for language $B$
+\begin{enumerate}
+    \item For the union, we can build a TM $M$ that is recognizable for language $A \cup B$. For input string $s$, it can be constructed as follow:
+    \begin{itemize}
+        \item Run $s$ on $M_A$ and and $M_B$ at the same time
+        \begin{itemize}
+            \item If either one of them accept $\to$ accept
+            \item Otherwise $\to$ reject
+        \end{itemize}
+    \end{itemize}
+    \item For concatenation, we can build a TM $M$ that is recognizable for language $AB$. For a input string $s$, $M$ is built as following:
+    \begin{itemize}
+        \item Divide the string $s$ into two parts, string $s_1$ and $s_2$
+        \item Run $s_1$ on $M_A$
+        \item If $s_1$ is accepted by $M_A$, run $s_2$ on $M_B$
+        \item If both accepted $\to$ accept
+        \item Otherwise $\to$ reject
+    \end{itemize}
+    \item For star, we can build a TM $M$ that is recognizable for language $A^*$. For a input string $s$, the $M$ can be constructed as following:
+    \begin{enumerate}
+        \item Split the string $s$ into $s_1$ and $s_2$, where $s_2$ can be empty
+        \item Run $s_1$ in $M_A$
+        \item If $M_A$ accepts $s_1$ and $s_2=\epsilon$ $\to$ accept
+        \item If $s_2$ is not empty, let $s_2$ be string $s$ in step i, repeat step i
+        \item If $M_A$ rejects $s_1$ or loop forever $\to$ reject
+    \end{enumerate}
+    \item For intersection, we can build a TM $M$ that recognizes the language $A \cap B$. For string $s$, the $M$ is constructed as:
+    \begin{itemize}
+        \item Run string $s$ in machine $M_A$
+        \item If $M_A$ accepts $s$, rewind to the beginning and run in machine $M_B$
+        \item If $M_B$ also accepts $s$ $\to$ accept
+        \item Otherwise $\to$ reject
+    \end{itemize}
+\end{enumerate}
+}
+
+\item (3.18)
+Note: {\bf Lexicographic order} of strings refers to the familiar dictionary order. The modified {\bf shortlex order}, also known as {\bf string order}, is identical to lexicographic, except that shorter strings precede longer strings: e.g., for $\Sigma = \{{\tt 0},{\tt 1}\}$, the elements of $\Sigma^*$ in string order would begin $\epsilon, {\tt 0}, {\tt 1}, {\tt 00}, {\tt 01}, {\tt 10}, {\tt 11}, {\tt 000}, \ldots$.
+
+Show that a language is decidable iff some enumerator enumerates the language in the standard string order. (Hint: for the ($\Leftarrow$) direction, there are two cases, depending on whether the language is finite or infinite.)
+
+\solution{
+\if\isanswerkey1\solDecidableIffEnumerateStringOrder\fi
+First show that TM $M$ decides language $A$ $\Rightarrow$ enumerator $E$ enumerates $A$:
+\\Assume Turing machine $M$ recognizes language $A$, let strings $s_1$, $s_2$, $s_3$, ..., $s_i$, ..., $s_n$ be all strings of $\Sigma^*$ in the lexicographic order. So that there will be an enumerator which enumerates language $A$:
+\\$E=$ ``On input $s_1$, $s_2$, ... $s_n$
+\begin{enumerate}
+    \item Repeat for $i=1, 2, 3, ..., n$
+    \item Run string $s_i$ on machine $M$
+    \item If $M$ accepts string $s_i$, prints $s_i$''
+\end{enumerate}
+So that $E$ will show all strings accepts by TM $M$ in the lexicographic order. So that 
+\begin{equation*}
+    \exists ~E \mid E ~\text{enumerates language} ~A
+\end{equation*}
+Hence $M$ decides $A$ $\Rightarrow$ $\exists ~E$ enumerates $A$
+\\Next, we show that TM $M$ decides language $A\Leftarrow$ enumerator $E$ enumerates $A$:
+\\If language $A$ is finite, $\exists ~M \mid M ~\text{decides language} ~A$ since for all finite language, there must be a Turing machine that decides it.
+\\If language $A$ is infinite, we can construct a Turing machine $M$ that decides language $A$, where machine $M$ can be constructed as:
+\\$M=$ ``On input string $s$,
+\begin{enumerate}
+    \item Run enumerator $E$
+    \item Every time when $E$ prints a string, compare it with string $s$
+    \item If the two string are equal $\to$ accept
+    \item When all strings are printed, and no strings are equal $\to$ reject''
+\end{enumerate}
+So that $\exists ~M \mid M ~\textnormal{decides language } A$, hence enumerator $E$ enumerates $A$ $\Rightarrow$ $M$ decides $A$. In conclusion, $\exists ~M \mid M$ decides language $A$ $\Longleftrightarrow$ $\exists ~E \mid E$ enumerates $A$
+}
+
+\item (3.19) Show that every infinite Turing-recognizable language has an infinite decidable subset. (Hint: use the result of the previous problem.)
+\solution{
+\if\isanswerkey1\solInfiniteDecidableSubset\fi
+From the previous problem, we concluded that $\exists ~M \mid M$ decides language $A$ $\Longleftrightarrow$ $\exists ~E \mid E$ enumerates $A$. Assume language $B$ is recognizable by Turing machine $M_B$, so that there will be an enumerator $E_B$ that recognizes language $B$. So for language $C \subseteq B$, since there is a $E_B$ that enumerates language $B$, since $C \subseteq B$, so there must be an enumerator $E_C$ that enumerates language $C$. Based on the conclusion from problem above, since there is a enumerator for language $C$, so $\exists ~M_C \mid M_C ~\textnormal{language } C \subseteq B$.
+}
+
+\item (3.22) Let $A$ be the language containing only the single string $s$, where
+\[s = \begin{cases} {\tt 0} & \textnormal{if life never will be found on Mars.} \cr {\tt 1} & \textnormal{if life will be found on Mars someday.}\end{cases}\]
+Is $A$ decidable? Why or why not? For the purposes of this problem, assume that the question of whether life will be found on Mars has an unambiguous YES or NO answer.
+\solution{
+\if\isanswerkey1\solLifeOnMars\fi
+Since for language $A$, there is only two possible string $s$ for $A$ where $A$ can be either {\tt 0} or {\tt 1}. The two string are all finite, so that language $A$ is also finite. Since for a finite language, there must be a Turing machine that decides it. So language $A$ is Turing decidable.
+}
+
+
+\end{enumerate}
+
+
+
+
+
+\end{document}

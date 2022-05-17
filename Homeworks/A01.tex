@@ -1,0 +1,227 @@
+\documentclass[11pt]{article}
+
+%%TO EDIT
+\newcommand{\dueclassnumber}{3}
+\newcommand{\assignmentnum}{1}
+
+% CHANGE issolution{0} to issolution{1} for homework submission.
+% WRITE solutions inside the \solution{} commands.
+% or, you can use \if\issolution1 … \fi
+
+\def\issolution{1}
+\def\myname{Allen Liu} % My name goes here
+\def\mysec{01} % Section number goes here
+\def\myCM{374} % Campus Mailbox goes here
+
+\input{../common/flags}
+
+% Leave the next line alone. This is for my answer keys.
+%\def\isanswerkey{1}
+
+\input{../common/header474}
+\if\isanswerkey1\input{macsse474-key}\fi
+
+\begin{document}
+
+\assignmentnametitlestuff
+
+
+\if\isanswerkey0
+\textbf{Please read the following homework guidelines before starting.}
+
+\begin{itemize}
+\item Get started early on all assignments! Sometimes you will need ``incubation time" to work out problems.
+\item Assignment submissions are to be typed or written neatly. Using \LaTeX{} is optional, but if you decide to use it, feel free to use the template posted to the Moodle page for the assignment.
+\item Problems should be numbered as they are on this paper (1, 2, 3, etc.)
+\item Problems must appear in order. If you cannot complete a given problem, write the problem number and label, and indicate that you do not have a solution. Otherwise you may waste the grader's time looking for the problem.
+\item Leave adequate spacing. One page per problem is often appropriate, but anything that clearly indicates problem boundaries is acceptable.
+\item When submitting electronically, take good scans and/or photos and upload as a single PDF file.
+\item You are encouraged to discuss homework problems with classmates, TAs, and instructor, but all work that you
+write up should be {\bf your own and in your own words}. 
+You may make free use of the textbook and class notes, but you must {\bf cite any other
+source you use}.
+\end{itemize}
+
+% \newpage
+\textbf{Problems}
+\fi
+
+
+\begin{enumerate}
+
+\item (Sipser 1.6, Parts a, c, d, e, f, j, m, n)
+Give state diagrams of DFAs recognizing the following languages. In all parts, the alphabet is $\{{\tt 0}, {\tt1}\}$.
+\begin{enumerate}
+% Bonus for those using LaTeX! This first problem is done for you. (Partly to show how to use the tikzpicture environment.)
+\item[(a)] $\{w \mid w \textnormal{ begins with a {\tt 1} and ends with a {\tt 0}}\}$
+\solution{
+% \begin{tikzpicture}
+% \node[state, initial] (q1) {$q_1$};
+% \node[state, right of=q1] (q2) {$q_2$};
+% \node[state, below of=q2] (q3) {$q_3$};
+% \node[state, accepting, right of=q3] (q4) {$q_4$};
+% \draw 
+% (q1) edge[above] node{0} (q2)
+% (q1) edge[left] node{1} (q3)
+% (q2) edge[loop above] node{0,1} (q2)
+% (q3) edge[bend left, above] node{0} (q4)
+% (q3) edge[loop above] node{1} (q3)
+% (q4) edge[bend left, below] node{1} (q3)
+% (q4) edge[loop above] node{0} (q4)
+% ;
+% \end{tikzpicture}
+\begin{tikzpicture}
+\node[state, initial] (q0) {$q_0$};
+\node[state, right of=q0] (q1) {$q_1$};
+\node[state, accepting, right of=q1] (q2) {$q_2$};
+\node[state, below of=q1] (q3) {$q_3$};
+\draw
+(q0) edge[below, right] node{0} (q3)
+(q0) edge[right, above] node{1} (q1)
+(q1) edge[bend left, above] node{0} (q2)
+(q1) edge[loop above] node{1} (q1)
+(q2) edge[loop above] node{0} (q2)
+(q2) edge[bend left, below] node{1} (q1)
+(q3) edge[loop below] node{0, 1} (q3)
+;
+\end{tikzpicture}
+}
+\item[(c)] $\{w \mid w \textnormal{ contains the substring {\tt 0101} (i.e., $w = x{\tt 0101}y$ for some $x$ and $y$}\}$
+\solution{
+\if\isanswerkey1\solDFAdiagramsC\fi
+\begin{tikzpicture}
+\node[state, initial] (q0) {$q_0$};
+\node[state, right of=q0] (q1) {$q_1$};
+\node[state, right of=q1] (q2) {$q_2$};
+\node[state, below of=q1] (q3) {$q_3$};
+\node[state, accepting, right of=q3] (q4) {$q_4$};
+\draw
+(q0) edge[right, above] node{0} (q1)
+(q0) edge[loop above] node{1} (q0)
+(q1) edge[bend left, above] node{0} (q0)
+(q1) edge[right, above] node{1} (q2)
+(q2) edge[right, above] node{0} (q3)
+(q2) edge[bend right, above] node{1} (q0)
+(q3) edge[left, below] node{0} (q0)
+(q3) edge[right, above] node{1} (q4)
+(q4) edge[loop above] node{0, 1} (q4)
+;
+\end{tikzpicture}
+}
+\item[(d)] $\{w \mid w \textnormal{ has length at least 3 and its third symbol is a {\tt 0}}\}$
+\solution{
+\if\isanswerkey1\solDFAdiagramsD\fi
+\begin{tikzpicture}
+\node[state, initial] (q0) {$q_0$};
+\node[state, right of=q0] (q1) {$q_1$};
+\node[state, right of=q1] (q2) {$q_2$};
+\node[state, accepting, below of=q1] (q3) {$q_3$};
+\node[state, right of=q3] (q4) {$q_4$};
+\draw
+(q0) edge[right, above] node{0, 1} (q1) 
+(q1) edge[right, above] node{0, 1} (q2) 
+(q2) edge[right, above] node{0} (q3) 
+(q2) edge[right, right] node{1} (q4) 
+(q3) edge[loop below] node{0, 1} (q3)
+(q4) edge[loop below] node{0, 1} (q4)
+;
+\end{tikzpicture}
+}
+\item[(e)] $\{w \mid w \textnormal{ starts with {\tt 0} and has odd length, or starts with {\tt 1} and has even length}\}$
+\solution{
+\if\isanswerkey1\solDFAdiagramsE\fi
+\begin{tikzpicture}
+\node[state, initial] (q0) {$q_0$};
+\node[state, accepting, right of=q0] (q1) {$q_1$};
+\node[state, right of=q1] (q2) {$q_2$};
+\node[state, below of=q1] (q3) {$q_3$};
+\node[state, accepting, right of=q3] (q4) {$q_4$};
+\draw
+(q0) edge[right, above] node{0} (q1) 
+(q0) edge[right, above] node{1} (q3) 
+(q1) edge[bend left, above] node{0, 1} (q2) 
+(q2) edge[bend left, below] node{0, 1} (q1) 
+(q3) edge[bend left, above] node{0, 1} (q4) 
+(q4) edge[bend left, below] node{0, 1} (q3) 
+;
+\end{tikzpicture}
+}
+\item[(f)] $\{w \mid w \textnormal{ doesn't contain the substring {\tt 110}}\}$
+\solution{
+\if\isanswerkey1\solDFAdiagramsF\fi
+\begin{tikzpicture}
+\node[state, accepting, initial] (q0) {$q_0$};
+\node[state, accepting, right of=q0] (q1) {$q_1$};
+\node[state, accepting, right of=q1] (q2) {$q_2$};
+\node[state, below of=q1] (q3) {$q_3$};
+\draw
+(q0) edge[loop above] node{0} (q0)
+(q0) edge[right, above] node{1} (q1)
+(q1) edge[bend left, above] node{0} (q0)
+(q1) edge[right, above] node{1} (q2)
+(q2) edge[right, above] node{0} (q3)
+(q2) edge[bend right, above] node{1} (q0)
+(q3) edge[loop below] node{0, 1} (q3)
+;
+\end{tikzpicture}
+}
+\item[(j)] $\{w \mid w \textnormal{ contains at least two {\tt 0}s and at most one {\tt 1}}\}$
+\solution{
+\if\isanswerkey1\solDFAdiagramsJ\fi
+\begin{tikzpicture}
+\node[state, initial] (q0) {$q_0$};
+\node[state, right of=q0] (q1) {$q_1$};
+\node[state, accepting, right of=q1] (q2) {$q_2$};
+\node[state, below of=q0] (q3) {$q_3$};
+\node[state, right of=q3] (q4) {$q_4$};
+\node[state, accepting, right of=q4] (q5) {$q_5$};
+\node[state, below of=q5] (q6) {$q_6$};
+\draw
+(q0) edge[right, above] node{0} (q1)
+(q0) edge[right, right] node{1} (q3)
+(q1) edge[right, above] node{0} (q2)
+(q1) edge[right, right] node{1} (q4)
+(q2) edge[loop above] node{0} (q2)
+(q2) edge[right, right] node{1} (q5)
+(q3) edge[right, above] node{0} (q4)
+(q3) edge[bend right, above] node{1} (q6)
+(q4) edge[right, above] node{0} (q5)
+(q4) edge[right, below] node{1} (q6)
+(q5) edge[loop right] node{0} (q5)
+(q5) edge[below, right] node{1} (q6)
+(q6) edge[loop below] node{0, 1} (q6)
+;
+\end{tikzpicture}
+}
+\item[(m)] The empty set
+\solution{
+\if\isanswerkey1\solDFAdiagramsM\fi
+\begin{tikzpicture}
+\node[state, initial] (q0) {$q_0$};
+\draw
+(q0) edge[loop above] node{0, 1} (q0);
+\end{tikzpicture}
+}
+\item[(n)] All strings except the empty string
+\solution{
+\if\isanswerkey1\solDFAdiagramsN\fi
+\begin{tikzpicture}
+
+\node[state, initial] (q0) {$q_0$};
+\node[state, accepting, right of=q0] (q1) {$q_1$};
+\draw
+(q0) edge[right, above] node{0, 1} (q1)
+(q1) edge[loop above] node{0, 1} (q1);
+\end{tikzpicture}
+}
+
+\end{enumerate}
+
+
+
+
+
+\end{enumerate}
+
+
+\end{document}

@@ -1,0 +1,125 @@
+\documentclass[11pt]{article}
+
+\usepackage{enumitem}
+
+
+%%TO EDIT
+\newcommand{\dueclassnumber}{29}
+\newcommand{\assignmentnum}{12}
+
+% CHANGE issolution{0} to issolution{1} for homework submission.
+% WRITE solutions inside the \solution{} commands.
+% or, you can use \if\issolution1 … \fi
+
+\def\issolution{1}
+\def\myname{Allen Liu} % My name goes here
+\def\mysec{01} % Section number goes here
+\def\myCM{374} % Campus Mailbox goes here
+
+\input{../common/flags}
+
+% Leave the next line alone. This is for my answer keys.
+%\def\isanswerkey{1}
+
+\input{../common/header474}
+\if\isanswerkey1\input{macsse474-key}\fi
+
+\newcommand\dom[2]{\left[ \begin{array}{c} {#1} \cr\hline {#2} \end{array}\right]}
+\newcommand\domt[2]{\left[ \begin{array}{c} {\tt #1} \cr\hline {\tt #2} \end{array}\right]}
+
+\usetikzlibrary{positioning}
+
+\begin{document}
+
+\assignmentnametitlestuff
+
+
+\begin{enumerate}
+
+
+\item (5.28) {\bf Rice's theorem.} Let $P$ be any nontrivial property of the language of a Turing machine. Prove that the problem of determining whether a given Turing machine's language has property $P$ is undecidable.
+
+In more formal terms, let $P$ be a language consisting of Turing machine descriptions where $P$ fulfills two conditions. First, $P$ is nontrivial---it contains some, but not all, TM descriptions. Second, $P$ is a property of the TM's language---whenever $L(M_1) = L(M_2)$, we have $\langle M_1 \rangle \in P$ iff $\langle M_2 \rangle \in P$. Here, $M_1$ and $M_2$ are any TMs. Prove that $P$ is an undecidable language.
+
+Hints:
+\begin{itemize}
+\item Assume without loss of generality that $\langle T_\emptyset \rangle \notin P$ where $T_\emptyset$ is a TM which rejects all input: if not, then we could switch the task to showing $\overline{P}$ is undecidable, and this condition would apply. (Note that if either $P$ or $\overline{P}$ is decidable, so is the other.)
+\item Since $P$ is nonempty, there exists some TM $T$ such that $\langle T \rangle \in P$. (In the case of proving $\overline{P}$ is decidable, the analogous statement can be made as we know $P$ doesn't contain all TM descriptions.)
+\item Try reducing from $A_\textnormal{TM}$ to $P$. For an input $\langle M, w \rangle$ to $A_\textnormal{TM}$, consider the cases $\begin{cases} M \textnormal { accepts } w \cr M \textnormal { rejects } w, \end{cases}$ you want to construct a machine $M_w$ such that the two cases $\begin{cases} \langle M_w \rangle \in P \cr \langle M_w \rangle \notin P \end{cases}$ correspond to the two cases regarding $M$, so that you can run your purported $P$-decider to decide $A_\textnormal{TM}$. 
+\end{itemize}
+\solution{
+\if\isanswerkey1\solRicesTheorem\fi
+\textsc{Proof}: Assume that $\langle T_\emptyset \notin P$, suppose to contrary that there is a decider $D_\textnormal{P}$ that decides the language $P$, So that $D_\textnormal{P}$ can be described as following:\\
+$D_\textnormal{P}=$ ``On input $\langle M\rangle$, 
+\begin{enumerate}
+    \item If $\langle M\rangle \in P$ \tmAcc
+    \item Otherwise \tmRej''
+\end{enumerate}
+Since language $P \neq \emptyset$, so that $\exists ~\langle M'\rangle \mid \langle M'\rangle \in P$. And we can construct a decider $R$ that decides language $A_\textnormal{TM}$. The decider $R$ is defined as following:\\
+$R=$ ``On input $\langle M, w\rangle$, 
+\begin{enumerate}
+    \item Construct a Turing-machine $M_w$ as following:\\
+    $M_w=$ `On input $x$, $x$ is a string,
+    \begin{enumerate}
+        \item Run $w$ on $M$
+        \begin{enumerate}
+            \item If it rejects \tmRej
+            \item Otherwise, run $M'$ on input $x$
+            \begin{enumerate}
+                \item If it accepts \tmAcc
+                \item Otherwise \tmRej
+            \end{enumerate}
+        \end{enumerate}
+    \end{enumerate}
+    \item Run $\langle M_w\rangle$ in decider $D_\textnormal{P}$
+    \begin{enumerate}
+        \item If it accept \tmAcc
+        \item Otherwise \tmRej''
+    \end{enumerate}
+\end{enumerate}
+Since for the machine $M_w$, $M_w$ accepts $x$ iff $M$ accepts $w$ and $M'$ accepts $x$. If $M$ accepts $w$, so that $M_w$ accepts $x$ $\Longleftrightarrow$ $M'$ accepts $x$, which is equivalent with $L(M_w)=L(M')$. And since we know that $\langle M'\rangle \in P$, so as $\langle M_w\rangle$, so that $D_\textnormal{P}$ accepts $\langle M, w \rangle$. When $M$ rejects $w$, $L(M_w)=\emptyset$, so $\langle M_w\rangle \notin P$. So that $R$ rejects $\langle M, w\rangle$, which makes the decider $D_\textnormal{P}$ decides language $A_\textnormal{TM}$. Since we have proved that $A-\textnormal{TM}$ is not decidable, so that $D_\textnormal{P}$ does not exist, hence languague $P$ is not decidable.
+}
+
+\item (5.7) Show that if $A$ is Turing-recognizable and $A \lem \overline{A}$, then $A$ is decidable.
+\solution{
+\if\isanswerkey1\solTRecognizableMappingReductionFromSelfToComplementThenDecidable\fi
+For language $A$, since we know that language $A$ is Turing-recognizable and $A \lem \overline{A}$, so that we know $\exists ~f \mid \left(\forall ~w \mid w \in A \Longleftrightarrow f(w) \in \overline{A}\right)$. So that we can conclude that $\overline{A} \lem A$. So that language $A$ is also Turing-recognizable. Then, language $A$ is both Turing-recognizable and Turing-corecognizable. Hence language $A$ is decidable.
+}
+
+\item (5.22) Show that $A$ is Turing-recognizable if and only if $A \lem A_\textnormal{TM}$.
+\solution{
+\if\isanswerkey1\solTRecognizableIffReducibleToATM\fi
+By \textbf{Theorem 5.28}, since language $A_\textnormal{TM}$ is recognizable, and $A \lem A_\textnormal{TM}$. So that language $A$ is Turing-recognizable. And for language $A$ that is recognizable, so that $\exists ~M \mid A=L(M)$. So that we can define a function $f$ such that $\forall ~w \mid f(w)=\langle M, w\rangle$, which makes $f(w) \in A_\textnormal{TM}$. So that $A \lem A_\textnormal{TM}$
+}
+
+
+\item Think about both of these problems, but you only need to write out a complete solution of one of them---your choice, either (a) or (b). 
+\begin{enumerate}
+\item (5.17) Show that the Post Correspondence Problem is decidable over the unary alphabet $\Sigma = \{{\tt 1}\}$.
+\solution{
+\if\isanswerkey1\solUnaryPCPDecidable\fi
+This problem can be converted to language that $A_\textnormal{PCP}=\{D \mid D \textnormal{ has a solution in PCP}\}$. Since $\Sigma=\texttt{\{1\}}$, then the only variable that matters is the number of characters in the top and the number of characters in the bottom. So that we can build a decider $D_\textnormal{A-PCP}$ that decides the language $A_\textnormal{PCP}$. The decider $D_\textnormal{A-PCP}$ is defined as following: \\
+$D_\textnormal{A-PCP}=$ ``On input $D$, where $D$ is the set of domino's
+\begin{enumerate}
+    \item If there is a $d \in D$ such that $d$ has same number on top and bottom \tmAcc
+    \item If $\forall ~d \in D \mid d \textnormal{ has more in the top}$ or $\forall ~d \in D \mid d \textnormal{ has more in the bottom}$ \tmRej
+    \item Otherwise \tmAcc''
+\end{enumerate}
+So that language $A_\textnormal{PCP}$ is decidable.
+}
+
+
+\item (5.18) Show that the Post Correspondence Problem is undecidable over the binary alphabet $\Sigma = \{{\tt 0}, {\tt 1}\}$.
+% \solution{
+% \if\isanswerkey1\solBinaryPCPUndecidable\fi
+% }
+
+\end{enumerate}
+
+
+\end{enumerate}
+
+
+
+
+\end{document}

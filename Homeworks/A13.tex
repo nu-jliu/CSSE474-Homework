@@ -1,0 +1,183 @@
+\documentclass[11pt]{article}
+
+\usepackage{enumitem}
+
+
+%%TO EDIT
+\newcommand{\dueclassnumber}{33}
+\newcommand{\assignmentnum}{13}
+
+% CHANGE issolution{0} to issolution{1} for homework submission.
+% WRITE solutions inside the \solution{} commands.
+% or, you can use \if\issolution1 … \fi
+
+\def\issolution{1}
+\def\myname{Allen Liu} % My name goes here
+\def\mysec{01} % Section number goes here
+\def\myCM{374} % Campus Mailbox goes here
+
+\input{../common/flags}
+
+% Leave the next line alone. This is for my answer keys.
+%\def\isanswerkey{1}
+
+\input{../common/header474}
+\if\isanswerkey1\input{macsse474-key}\fi
+\begin{document}
+
+\assignmentnametitlestuff
+
+
+\begin{enumerate}
+
+
+\item (7.6) Show that $\P$ is closed under union, concatenation, and complement. 
+\solution{
+\if\isanswerkey1\PclosedUnderUnionConcatenationComplement\fi
+\begin{itemize}
+    \item \textbf{Union}: Consider language $A, B$ such that $A \in \P$ and $B \in \P$. So that there exists a decider $D_\textnormal{A}$ and $D_\textnormal{B}$ that decides language $A$ and $B$ in polynomial time. For language $A \cup B$, we can build a decider $D_{\textnormal{A} \cup \textnormal{B}}$ that deas follow:\\
+    $D_{\textnormal{A} \cup \textnormal{B}}=$ ``On input $w$,
+    \begin{enumerate}
+        \item Run $D_\textnormal{A}$ on input $w$
+        \begin{enumerate}
+            \item If $D_\textnormal{A}$ accepts $w$ \tmAcc
+            \item If rejects, run $D_\textnormal{B}$ on input $w$
+            \begin{enumerate}
+                \item If $D_\textnormal{B}$ accepts $w$ \tmAcc
+                \item Otherwise \tmRej''
+            \end{enumerate}
+        \end{enumerate}
+    \end{enumerate}
+    Since $A, B \in \P$, so that decider $D_\textnormal{A}$ and $D_\textnormal{B}$ both runs in polynomial time. So for decider $D_{\textnormal{A} \cup \textnormal{B}}$, step $a, ii \to O(n^k)$, step $i, \textnormal{A, B} \to O(1)$. So for total, it runs in $O\left(n^k\right) + O(1) + O\left(n^k\right) + 2 \times O(1)=O\left(n^k\right)$, which makes decider $D_{\textnormal{A} \cup \textnormal{B}}$ runs in polynomial time. Hence $A \cup B \in \P$.
+    \item \textbf{Concatenation}: For language $A, B \in \P$, there exist a decider $D_\textnormal{A}, D_\textnormal{B}$ that decides $A, B$ in polynomial time. So that we can build a decider $D_\textnormal{AB}$ that decides language $AB$ in polynomial time as follow:\\
+    $D_\textnormal{AB}=$ ``On input $w$
+    \begin{enumerate}
+        \item Split the string $w$ into $x$ and $y$ such that $s=xy$ and $x, y \in \Sigma^+$
+        \item For each split case, repeat until all split cases has been run
+        \begin{enumerate}
+            \item Run $x$ in $D_\textnormal{A}$ and run $y$ in $D_\textnormal{B}$
+            \begin{enumerate}
+                \item If $D_\textnormal{A}$ accept $x$ and $D\textnormal{B}$ accepts $y$ \tmAcc
+            \end{enumerate}
+        \end{enumerate}
+        \item If none of the case has been accepted \tmRej''
+    \end{enumerate}
+    For the decider $D_\textnormal{AB}$, steps $a, A, c \to O(1)$, step $b \to O(n)$ and step $i \to O\left(n^k\right)$, so that total run time is $O(1) + O(n)\times O\left(n^k\right) \times O(1) + O(1) = O\left(n^k\right)$, which makes the decider $D_\textnormal{AB}$ decides language $AB$ in polynomial time. Hence $AB \in \P$
+    \item \textbf{Complement}: For a language $A \in \P$, there exists a decider $D_\textnormal{A}$ such that decides language $A$ in polynomial time. So that we can build a decider $D_\overline{\textnormal{A}}$ that decides language $\overline{A}$ as follow:
+    $D_\overline{\textnormal{A}}=$ ``On input $w$,
+    \begin{enumerate}
+        \item Run $w$ in $D_\textnormal{A}$
+        \begin{enumerate}
+            \item If it $D_\textnormal{A}$ accepts $w$ \tmRej
+            \item Otherwise \tmAcc''
+        \end{enumerate}
+    \end{enumerate}
+    So that for decider $D_\overline{\textnormal{A}}$, its step $a \to O\left(n^k\right)$ and steps $i, ii \to O(1)$. So that total run-time is $O\left(n^k\right) + 2\times O(1)=O\left(n^k\right)$. Hence $\overline{A} \in \P$
+\end{itemize}
+}
+
+\item (7.9) A {\bf triangle} in an undirected graph is a 3-clique. Show that $TRIANGLE \in \P$, where
+\[TRIANGLE = \{\langle G \rangle \mid G \textnormal{ is an undirected graph and $G$ contains a triangle}\}.\]
+\solution{
+\if\isanswerkey1\TriangleInP\fi
+For language $TRIANGLE$, we can build a decider $D_\textnormal{TRI}$ that accept language $TRIANGLE$ as follow:\\
+$D_\textnormal{TRI}=$ ``On input $\langle G \rangle$,
+\begin{enumerate}
+    \item Start at a starting node $n_\textnormal{S}$ and mark it as \texttt{a}
+    \item Repeat following until all nodes has been marked as \texttt{x}
+    \begin{enumerate}
+        \item For all nodes $n_i$ reachable from the node marked with \texttt{a} that has not been marked with \texttt{x} or \texttt{a} do the following steps
+        \begin{enumerate}
+            \item Mark it with \texttt{y}
+            \item If there is a node reachable from the $n_i$ that has been marked with \texttt{y} \tmAcc
+        \end{enumerate}
+        \item Pick one node marked with \texttt{y} and mark it with \texttt{a}
+        \item Mark the node marked with \texttt{a} with \texttt{x}''
+    \end{enumerate}
+\end{enumerate}
+For the decider $D_\textnormal{TRI}$, its steps $a, A, iii \to O(1)$, steps $b, i, B, ii \to O(n)$. So that the total run time is $O(1) + O(n) \times \left(O(n) \times (1 + O(n)) + O(n) + O(1)) \right)=O\left(n^3\right)$, which makes the decider $D_\textnormal{TRI}$ runs in polynomial time. Hence $TRIANGLE \in \P$
+}
+
+\item (7.10) Show that $ALL_\textnormal{DFA}$ is in $\P$.
+\solution{
+\if\isanswerkey1\ALLDFAInP\fi
+For language $ALL_\textnormal{DFA}$, we can build a decider $D_\textnormal{ALL-DFA}$ that decides it, where machine $D_\textnormal{All-DFA}$ is defined as:\\
+$D_\textnormal{All-DFA}=$``On input $\langle A\rangle$, $A$ is a DFA
+\begin{enumerate}
+    \item Mark the start state of $A$, $q_0$
+    \item Check if $q_0$ is accept state, if not $\to$ \textbf{\textit{reject}}
+    \begin{enumerate}
+        \item Mark all new states reachable from all marked state
+        \item If any one of new marked state is not an accept state $\to$ \textbf{\textit{reject}}
+    \end{enumerate}
+    \item If there is new state marked, repeat steps i$-$ii
+    \item 
+    \begin{enumerate}
+        \item If all marked states are accept state $\to$ \textbf{\textit{accept}}
+        \item Otherwise $\to$ \textbf{\textit{reject}}''
+    \end{enumerate}
+\end{enumerate}
+For the decider $D_\textnormal{ALL-DFA}$, its steps $a, b \to O(1)$, steps $b_{ii}, c, d_i, d_{ii} \to O(n)$, steps $b_i \to O\left(n^2\right)$. So total run-time is $O(1) + O(1) + O(n) \times \left( O(n) + O\left(n^2\right) \right) + O(n) + O(n) = O\left(n^3\right)$. This makes the decider $D_\textnormal{ALL-DFA}$ runs in polynomial time. Hence $ALL_\textnormal{DFA} \in \P$
+}
+
+\item (7.11a) Show that $EQ_\textnormal{DFA}$ is in $\P$.
+\solution{
+\if\isanswerkey1\EQDFAInP\fi
+According \textbf{Theorem 4.4, 4.5}, there is a decider $D_\textnormal{EQ-DFA}$ that decides language $EQ_\textnormal{DFA}$:\\
+$D_\textnormal{EQ-DFA}=$ ``On input $\langle M_1, M_2\rangle$,
+\begin{enumerate}
+    \item Construct a DFA $M$ such that $L(M)=\left(L(A) \cap \overline{L(B)}\right) \cup \left(\overline{L(A)} \cap L(B)\right)$
+    \item Mark the start state of $M$
+    \item Repeat until no new states marked
+    \begin{enumerate}
+        \item Mark all new states from the states that already has been marked
+    \end{enumerate}
+    \item If no accept state has been marked \tmAcc
+    \item Otherwise \tmRej''
+\end{enumerate}
+For this decider $D_\textnormal{EQ-DFA}$, the steps $a, b \to O(1)$, steps $c, d, e \to O(n)$, step $c_i \to O\left(n^2\right)$. So that the overall runtime is $O(1) + O(1) + O(n) \times O\left(n^2\right) + O(n) + O(n) = O\left(n^3\right)$, so that the decider $D_\textnormal{EQ-DFA}$ runs in in polynomial time. Hence $EQ_\textnormal{DFA} \in \P$
+}
+
+
+\item (7.7) Show that $\NP$ is closed under union and concatenation.
+\solution{
+\if\isanswerkey1\NPclosedUnderUnionConcatenation\fi
+\begin{itemize}
+    \item \textbf{Union}: For language $A, B \in \NP$, there exist the decider $D_\textnormal{A}$ and $D_\textnormal{B}$ that decides language $A$ and $B$ nondeterministically in polynomial time. So that we can build a decider $D_{\textnormal{A} \cup \textnormal{B}}$ that decides language $A \cup B$ as follow:\\
+    $D_{\textnormal{A} \cup \textnormal{B}}=$ ``On input $w$
+    \begin{enumerate}
+        \item Nondeterminstically run $D_\textnormal{A}$ on input $w$
+        \begin{enumerate}
+            \item If $D_\textnormal{A}$ accepts $w$ \tmAcc
+            \item Otherwise run $D_\textnormal{B}$ on input $w$
+            \begin{enumerate}
+                \item If $D_\textnormal{B}$ accepts $w$ \tmAcc
+                \item Otherwise \tmRej''
+            \end{enumerate}
+        \end{enumerate}
+    \end{enumerate}
+    Since $D_\textnormal{A}, D_\textnormal{B} \in \NP$, $D_\textnormal{A}$ and $D_\textnormal{B}$ all runs nondeterminstically on input $w$ at polynomial time, so that decider $D_{\textnormal{A} \cup \textnormal{B}}$ also runs nondeterminstically in polynomial time. Hence $A\cup B \in \NP$
+    \item \textbf{Concatenation}: For language $A, B \in \NP$, there exist the decider $D_\textnormal{A}$ and $D_\textnormal{B}$ that decides language $A$ and $B$ nondeterministically in polynomial time. So that we can build a decider $D_\textnormal{AB}$ that decides the language $AB$:\\
+    $D_\textnormal{AB}=$ ``On input $w$
+    \begin{enumerate}
+        \item Split $w$ into $x$ and $y$ such that $w=xy$ and $x, y \in \Sigma^+$
+        \item For each split of $x, y$ repeat the following steps:
+        \begin{enumerate}
+            \item Run $D_\textnormal{A}$ on input $x$
+            \item If $D_\textnormal{A}$ reject $x$ $\to \textnormal{continue}$
+            \item Run $D_\textnormal{B}$ on input $y$
+            \item If $D_\textnormal{B}$ accept $y$ \tmAcc
+            \item Otherwise $\to \textnormal{continue}$''
+        \end{enumerate}
+        \item If no split has been accepted \tmRej
+    \end{enumerate}
+\end{itemize}
+For decider $D_\textnormal{AB}$, since they all runs nondeterminstically in polynomial time, and the total time of the $D_\textnormal{AB}$ is $O(n)\times(\textsc{Time}\left(D_\textnormal{A}\right) + \textsc{Time}\left(D_\textnormal{B}\right))$, which is also polynomial time. And since $D_\textnormal{A}$ and $D_\textnormal{B}$ runs nondeterminstically, so that $D_\textnormal{AB}$ runs nondeterminstically. Hence $AB \in \NP$
+}
+
+\end{enumerate}
+
+
+
+
+\end{document}
